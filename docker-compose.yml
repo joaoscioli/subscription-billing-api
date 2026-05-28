@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: subscription-billing-postgres
+    environment:
+      POSTGRES_DB: subscription_billing
+      POSTGRES_USER: billing
+      POSTGRES_PASSWORD: billing
+    ports:
+      - "5432:5432"
+    volumes:
+      - subscription_billing_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U billing -d subscription_billing"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  subscription_billing_postgres_data:

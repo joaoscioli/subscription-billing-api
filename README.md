@@ -81,6 +81,60 @@ Optional later layer:
 - [Roadmap](ROADMAP.md)
 - [Architecture Decision Records](docs/decisions/)
 
+## Getting Started
+
+### Requirements
+
+- Java 21
+- Docker and Docker Compose
+
+The repository includes the Maven Wrapper, so a local Maven installation is not required.
+
+### Start PostgreSQL
+
+```bash
+docker compose up -d postgres
+```
+
+### Run Tests
+
+```bash
+./mvnw test
+```
+
+On Windows PowerShell:
+
+```powershell
+.\mvnw.cmd test
+```
+
+### Run the Application
+
+```bash
+./mvnw spring-boot:run
+```
+
+On Windows PowerShell:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+Default local database settings are available in `.env.example` and `docker-compose.yml`.
+
+### API Documentation
+
+When the application is running, OpenAPI documentation is available at:
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+### Health Check
+
+Spring Boot Actuator health endpoint:
+
+- `http://localhost:8080/actuator/health`
+
 ## Initial Success Criteria
 
 The first public release should be considered ready when:

@@ -1,5 +1,4 @@
-﻿# Java / Spring
-.target/
+# Java / Spring
 target/
 build/
 out/
@@ -7,6 +6,9 @@ out/
 *.jar
 *.war
 *.ear
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
 
 # IDE
 .idea/

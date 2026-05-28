@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: subscription-billing-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/subscription_billing}
+    username: ${SPRING_DATASOURCE_USERNAME:billing}
+    password: ${SPRING_DATASOURCE_PASSWORD:billing}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
