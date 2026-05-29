@@ -135,6 +135,36 @@ Spring Boot Actuator health endpoint:
 
 - `http://localhost:8080/actuator/health`
 
+## Current API Surface
+
+### Organizations
+
+Create an organization:
+
+```http
+POST /api/organizations
+Content-Type: application/json
+
+{
+  "name": "Acme Inc",
+  "slug": "acme"
+}
+```
+
+List organizations:
+
+```http
+GET /api/organizations
+```
+
+Find an organization by slug:
+
+```http
+GET /api/organizations/acme
+```
+
+Organization slugs must be lowercase URL-friendly identifiers, for example `acme`, `acme-inc`, or `billing-team`.
+
 ## Initial Success Criteria
 
 The first public release should be considered ready when:
