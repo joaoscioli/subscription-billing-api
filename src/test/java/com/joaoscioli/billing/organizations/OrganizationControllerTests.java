@@ -18,7 +18,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql(statements = "DELETE FROM organizations", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(
+        statements = {"DELETE FROM customers", "DELETE FROM organizations"},
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+)
 class OrganizationControllerTests {
 
     @Autowired

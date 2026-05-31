@@ -1,5 +1,7 @@
 package com.joaoscioli.billing.common;
 
+import com.joaoscioli.billing.customers.CustomerNotFoundException;
+import com.joaoscioli.billing.customers.DuplicateCustomerEmailException;
 import com.joaoscioli.billing.organizations.DuplicateOrganizationSlugException;
 import com.joaoscioli.billing.organizations.OrganizationNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,24 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ApiErrorResponse handleOrganizationNotFound(
             OrganizationNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        return error(HttpStatus.NOT_FOUND, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(DuplicateCustomerEmailException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ApiErrorResponse handleDuplicateCustomerEmail(
+            DuplicateCustomerEmailException exception,
+            HttpServletRequest request
+    ) {
+        return error(HttpStatus.CONFLICT, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ApiErrorResponse handleCustomerNotFound(
+            CustomerNotFoundException exception,
             HttpServletRequest request
     ) {
         return error(HttpStatus.NOT_FOUND, exception.getMessage(), request);

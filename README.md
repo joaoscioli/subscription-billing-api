@@ -165,6 +165,34 @@ GET /api/organizations/acme
 
 Organization slugs must be lowercase URL-friendly identifiers, for example `acme`, `acme-inc`, or `billing-team`.
 
+### Customers
+
+Create a customer inside an organization:
+
+```http
+POST /api/organizations/acme/customers
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "email": "ada@acme.com"
+}
+```
+
+List customers from an organization:
+
+```http
+GET /api/organizations/acme/customers
+```
+
+Find a customer by id:
+
+```http
+GET /api/organizations/acme/customers/{customerId}
+```
+
+Customer emails are normalized to lowercase and must be unique inside the same organization.
+
 ## Initial Success Criteria
 
 The first public release should be considered ready when:

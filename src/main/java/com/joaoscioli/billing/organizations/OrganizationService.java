@@ -36,8 +36,12 @@ public class OrganizationService {
 
     @Transactional(readOnly = true)
     public OrganizationResponse findBySlug(String slug) {
+        return OrganizationResponse.from(getBySlug(slug));
+    }
+
+    @Transactional(readOnly = true)
+    public Organization getBySlug(String slug) {
         return repository.findBySlug(slug)
-                .map(OrganizationResponse::from)
                 .orElseThrow(() -> new OrganizationNotFoundException(slug));
     }
 }
