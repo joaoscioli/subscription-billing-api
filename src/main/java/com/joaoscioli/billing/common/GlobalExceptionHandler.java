@@ -4,6 +4,8 @@ import com.joaoscioli.billing.customers.CustomerNotFoundException;
 import com.joaoscioli.billing.customers.DuplicateCustomerEmailException;
 import com.joaoscioli.billing.organizations.DuplicateOrganizationSlugException;
 import com.joaoscioli.billing.organizations.OrganizationNotFoundException;
+import com.joaoscioli.billing.plans.DuplicatePlanCodeException;
+import com.joaoscioli.billing.plans.PlanNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -48,6 +50,24 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ApiErrorResponse handleCustomerNotFound(
             CustomerNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        return error(HttpStatus.NOT_FOUND, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(DuplicatePlanCodeException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ApiErrorResponse handleDuplicatePlanCode(
+            DuplicatePlanCodeException exception,
+            HttpServletRequest request
+    ) {
+        return error(HttpStatus.CONFLICT, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(PlanNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ApiErrorResponse handlePlanNotFound(
+            PlanNotFoundException exception,
             HttpServletRequest request
     ) {
         return error(HttpStatus.NOT_FOUND, exception.getMessage(), request);

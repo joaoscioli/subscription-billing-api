@@ -193,6 +193,37 @@ GET /api/organizations/acme/customers/{customerId}
 
 Customer emails are normalized to lowercase and must be unique inside the same organization.
 
+### Plans
+
+Create a billing plan inside an organization:
+
+```http
+POST /api/organizations/acme/plans
+Content-Type: application/json
+
+{
+  "name": "Starter",
+  "code": "starter",
+  "priceCents": 2900,
+  "currency": "BRL",
+  "billingInterval": "MONTHLY"
+}
+```
+
+List plans from an organization:
+
+```http
+GET /api/organizations/acme/plans
+```
+
+Find a plan by code:
+
+```http
+GET /api/organizations/acme/plans/starter
+```
+
+Plan codes must be lowercase URL-friendly identifiers and unique inside the same organization. Supported billing intervals are `MONTHLY` and `YEARLY`.
+
 ## Initial Success Criteria
 
 The first public release should be considered ready when:
