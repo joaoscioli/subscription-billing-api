@@ -41,4 +41,9 @@ public class SubscriptionController {
     public SubscriptionResponse findById(@PathVariable String organizationSlug, @PathVariable UUID id) {
         return service.findById(organizationSlug, id);
     }
+
+    @PostMapping("/{id}/cancel")
+    public SubscriptionResponse cancel(@PathVariable String organizationSlug, @PathVariable UUID id) {
+        return service.cancel(organizationSlug, id);
+    }
 }

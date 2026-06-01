@@ -66,10 +66,21 @@ public class SubscriptionService {
 
     @Transactional(readOnly = true)
     public SubscriptionResponse findById(String organizationSlug, UUID id) {
+        return SubscriptionResponse.from(getById(organizationSlug, id));
+    }
+
+    @Transactional
+    public SubscriptionResponse cancel(String organizationSlug, UUID id) {
+        var subscription = getById(organizationSlug, id);
+        subscription.cancel();
+
+        return SubscriptionResponse.from(subscription);
+    }
+
+    private Subscription getById(String organizationSlug, UUID id) {
         var organization = organizationService.getBySlug(organizationSlug);
 
         return repository.findByIdAndOrganization(id, organization)
-                .map(SubscriptionResponse::from)
                 .orElseThrow(() -> new SubscriptionNotFoundException(id));
     }
 

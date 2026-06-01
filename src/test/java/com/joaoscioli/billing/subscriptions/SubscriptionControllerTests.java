@@ -118,6 +118,45 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void cancelSubscriptionReturnsCanceledSubscription() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(subscriptionId))
+                .andExpect(jsonPath("$.status").value("CANCELED"))
+                .andExpect(jsonPath("$.canceledAt").isNotEmpty());
+    }
+
+    @Test
+    void canceledSubscriptionAllowsCustomerToSubscribeAgain() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        createPlan("acme", "Growth", "growth", 9900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", subscriptionId))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "customerId": "%s",
+                                  "planCode": "growth",
+                                  "startsOn": "2026-07-01"
+                                }
+                                """.formatted(customerId)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.planCode").value("growth"));
+    }
+
+    @Test
     void createSubscriptionRejectsDuplicateActiveSubscriptionForCustomer() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");

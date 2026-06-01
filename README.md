@@ -251,7 +251,13 @@ Find a subscription by id:
 GET /api/organizations/acme/subscriptions/{subscriptionId}
 ```
 
-The first subscription flow creates an `ACTIVE` subscription and calculates the current billing period from the selected plan interval. A customer can have only one active subscription in this MVP.
+Cancel a subscription:
+
+```http
+POST /api/organizations/acme/subscriptions/{subscriptionId}/cancel
+```
+
+The first subscription flow creates an `ACTIVE` subscription and calculates the current billing period from the selected plan interval. A customer can have only one active subscription in this MVP. Canceling a subscription changes its status to `CANCELED` and allows the customer to start a new active subscription.
 
 ## Initial Success Criteria
 

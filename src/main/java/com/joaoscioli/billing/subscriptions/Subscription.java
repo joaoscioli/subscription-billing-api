@@ -81,6 +81,15 @@ public class Subscription {
         this.currentPeriodEnd = currentPeriodEnd;
     }
 
+    public void cancel() {
+        if (this.status == SubscriptionStatus.CANCELED) {
+            return;
+        }
+
+        this.status = SubscriptionStatus.CANCELED;
+        this.canceledAt = OffsetDateTime.now(ZoneOffset.UTC);
+    }
+
     @PrePersist
     void prePersist() {
         var now = OffsetDateTime.now(ZoneOffset.UTC);
