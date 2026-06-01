@@ -224,6 +224,35 @@ GET /api/organizations/acme/plans/starter
 
 Plan codes must be lowercase URL-friendly identifiers and unique inside the same organization. Supported billing intervals are `MONTHLY` and `YEARLY`.
 
+### Subscriptions
+
+Create an active subscription for a customer:
+
+```http
+POST /api/organizations/acme/subscriptions
+Content-Type: application/json
+
+{
+  "customerId": "11111111-1111-1111-1111-111111111111",
+  "planCode": "starter",
+  "startsOn": "2026-06-01"
+}
+```
+
+List subscriptions from an organization:
+
+```http
+GET /api/organizations/acme/subscriptions
+```
+
+Find a subscription by id:
+
+```http
+GET /api/organizations/acme/subscriptions/{subscriptionId}
+```
+
+The first subscription flow creates an `ACTIVE` subscription and calculates the current billing period from the selected plan interval. A customer can have only one active subscription in this MVP.
+
 ## Initial Success Criteria
 
 The first public release should be considered ready when:

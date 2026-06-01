@@ -53,10 +53,14 @@ public class PlanService {
 
     @Transactional(readOnly = true)
     public PlanResponse findByCode(String organizationSlug, String code) {
+        return PlanResponse.from(getByCode(organizationSlug, code));
+    }
+
+    @Transactional(readOnly = true)
+    public Plan getByCode(String organizationSlug, String code) {
         var organization = organizationService.getBySlug(organizationSlug);
 
         return repository.findByCodeAndOrganization(code, organization)
-                .map(PlanResponse::from)
                 .orElseThrow(() -> new PlanNotFoundException(code));
     }
 }

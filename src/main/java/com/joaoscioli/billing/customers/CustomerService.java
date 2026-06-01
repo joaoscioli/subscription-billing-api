@@ -46,10 +46,14 @@ public class CustomerService {
 
     @Transactional(readOnly = true)
     public CustomerResponse findById(String organizationSlug, UUID id) {
+        return CustomerResponse.from(getById(organizationSlug, id));
+    }
+
+    @Transactional(readOnly = true)
+    public Customer getById(String organizationSlug, UUID id) {
         var organization = organizationService.getBySlug(organizationSlug);
 
         return repository.findByIdAndOrganization(id, organization)
-                .map(CustomerResponse::from)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
