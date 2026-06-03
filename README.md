@@ -78,6 +78,7 @@ Optional later layer:
 ## Project Documentation
 
 - [Architecture](docs/architecture.md)
+- [Test Strategy](docs/test-strategy.md)
 - [Roadmap](ROADMAP.md)
 - [Architecture Decision Records](docs/decisions/)
 
