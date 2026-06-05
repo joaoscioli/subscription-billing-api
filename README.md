@@ -79,6 +79,7 @@ Optional later layer:
 
 - [Architecture](docs/architecture.md)
 - [Test Strategy](docs/test-strategy.md)
+- [Quality Gates](docs/quality-gates.md)
 - [Roadmap](ROADMAP.md)
 - [Architecture Decision Records](docs/decisions/)
 
