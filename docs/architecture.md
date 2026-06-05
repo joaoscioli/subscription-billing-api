@@ -177,13 +177,20 @@ Planned improvements:
 
 ## Observability
 
-The project already includes Spring Boot Actuator as a dependency and documents the health endpoint in the README.
+The project includes Spring Boot Actuator and exposes health, info, and metrics
+endpoints as the first operational visibility layer.
+
+Current observability behavior:
+
+- `/actuator/health` reports application health;
+- `/actuator/info` reports application metadata;
+- `/actuator/metrics` exposes Micrometer metric names and values;
+- automated tests verify health and info endpoints.
 
 Planned observability work:
 
-- document health endpoints;
 - add structured logging conventions;
-- expose useful metrics through Micrometer;
+- add selected custom metrics for subscription lifecycle operations;
 - optionally add Prometheus and Grafana local setup.
 
 ## Security Direction

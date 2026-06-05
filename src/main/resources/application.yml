@@ -13,10 +13,23 @@ spring:
     open-in-view: false
 
 management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
   endpoints:
     web:
       exposure:
         include: health,info,metrics
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Subscription Billing API
+    description: Portfolio backend for a SaaS subscription billing domain
+    version: ${APP_VERSION:0.0.1-SNAPSHOT}
 
 springdoc:
   api-docs:
