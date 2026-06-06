@@ -207,6 +207,9 @@ Planned security direction:
 - protected endpoints by default;
 - security tests for authenticated and unauthorized access.
 
+See [ADR 0005](decisions/0005-use-jwt-for-api-authentication.md) for the
+authentication and JWT direction.
+
 ## Architecture Constraints
 
 - Keep changes small and reviewable.
