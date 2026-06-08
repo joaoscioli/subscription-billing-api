@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql(
-        statements = {"DELETE FROM subscriptions", "DELETE FROM plans", "DELETE FROM customers", "DELETE FROM organizations"},
+        statements = {"DELETE FROM application_users", "DELETE FROM subscriptions", "DELETE FROM plans", "DELETE FROM customers", "DELETE FROM organizations"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 class CustomerControllerTests {
