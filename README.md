@@ -78,6 +78,7 @@ Optional later layer:
 ## Project Documentation
 
 - [Architecture](docs/architecture.md)
+- [Authentication](docs/authentication.md)
 - [Test Strategy](docs/test-strategy.md)
 - [Quality Gates](docs/quality-gates.md)
 - [Observability](docs/observability.md)
