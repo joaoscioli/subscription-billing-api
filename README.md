@@ -80,6 +80,7 @@ Optional later layer:
 - [Architecture](docs/architecture.md)
 - [Authentication](docs/authentication.md)
 - [Authentication API Contract](docs/auth-api-contract.md)
+- [Authentication Test Plan](docs/auth-test-plan.md)
 - [Test Strategy](docs/test-strategy.md)
 - [Quality Gates](docs/quality-gates.md)
 - [Observability](docs/observability.md)
