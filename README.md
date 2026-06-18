@@ -83,6 +83,7 @@ Optional later layer:
 - [Authentication Test Plan](docs/auth-test-plan.md)
 - [Authorization Model](docs/authorization-model.md)
 - [Security Implementation Plan](docs/security-implementation-plan.md)
+- [Error Handling](docs/error-handling.md)
 - [Test Strategy](docs/test-strategy.md)
 - [Quality Gates](docs/quality-gates.md)
 - [Observability](docs/observability.md)
