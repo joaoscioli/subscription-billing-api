@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -115,7 +116,18 @@ public class GlobalExceptionHandler {
                 status.value(),
                 status.getReasonPhrase(),
                 message,
-                request.getRequestURI()
+                request.getRequestURI(),
+                correlationId(request)
         );
+    }
+
+    private String correlationId(HttpServletRequest request) {
+        var headerValue = request.getHeader("X-Correlation-Id");
+
+        if (headerValue == null || headerValue.isBlank()) {
+            return UUID.randomUUID().toString();
+        }
+
+        return headerValue;
     }
 }

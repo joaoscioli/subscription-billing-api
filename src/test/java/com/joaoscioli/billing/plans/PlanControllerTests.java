@@ -87,6 +87,7 @@ class PlanControllerTests {
         createPlan("acme", "Starter", "starter", 2900);
 
         mockMvc.perform(post("/api/organizations/acme/plans")
+                        .header("X-Correlation-Id", "portfolio-test-correlation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -98,6 +99,10 @@ class PlanControllerTests {
                                 }
                                 """))
                 .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.error").value("Conflict"))
+                .andExpect(jsonPath("$.path").value("/api/organizations/acme/plans"))
+                .andExpect(jsonPath("$.correlationId").value("portfolio-test-correlation"))
                 .andExpect(jsonPath("$.message").value("Plan code already exists for organization: starter"));
     }
 
