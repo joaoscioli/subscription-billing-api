@@ -142,9 +142,11 @@ class PlanControllerTests {
                                   "currency": "BRL",
                                   "billingInterval": "MONTHLY"
                                 }
-                                """))
+                """))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").isNotEmpty());
+                .andExpect(jsonPath("$.message").value("Request validation failed"))
+                .andExpect(jsonPath("$.details[0].field").value("priceCents"))
+                .andExpect(jsonPath("$.details[0].message").isNotEmpty());
     }
 
     @Test

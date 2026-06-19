@@ -1,6 +1,7 @@
 package com.joaoscioli.billing.common;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public record ApiErrorResponse(
         OffsetDateTime timestamp,
@@ -8,6 +9,7 @@ public record ApiErrorResponse(
         String error,
         String message,
         String path,
-        String correlationId
+        String correlationId,
+        List<ApiFieldError> details
 ) {
 }

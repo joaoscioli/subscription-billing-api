@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.UUID;
 
 @RestControllerAdvice
@@ -100,24 +101,33 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException exception,
             HttpServletRequest request
     ) {
-        var message = exception.getBindingResult()
+        var details = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .findFirst()
-                .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
-                .orElse("Invalid request");
+                .map(fieldError -> new ApiFieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .toList();
 
-        return error(HttpStatus.BAD_REQUEST, message, request);
+        return error(HttpStatus.BAD_REQUEST, "Request validation failed", request, details);
     }
 
     private ApiErrorResponse error(HttpStatus status, String message, HttpServletRequest request) {
+        return error(status, message, request, List.of());
+    }
+
+    private ApiErrorResponse error(
+            HttpStatus status,
+            String message,
+            HttpServletRequest request,
+            List<ApiFieldError> details
+    ) {
         return new ApiErrorResponse(
                 OffsetDateTime.now(ZoneOffset.UTC),
                 status.value(),
                 status.getReasonPhrase(),
                 message,
                 request.getRequestURI(),
-                correlationId(request)
+                correlationId(request),
+                details
         );
     }
 
