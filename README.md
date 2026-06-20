@@ -85,6 +85,7 @@ Optional later layer:
 - [Security Implementation Plan](docs/security-implementation-plan.md)
 - [Error Handling](docs/error-handling.md)
 - [Test Strategy](docs/test-strategy.md)
+- [Continuous Integration](docs/ci.md)
 - [Quality Gates](docs/quality-gates.md)
 - [Observability](docs/observability.md)
 - [Roadmap](ROADMAP.md)
