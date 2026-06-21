@@ -88,6 +88,7 @@ Optional later layer:
 - [Test Strategy](docs/test-strategy.md)
 - [Continuous Integration](docs/ci.md)
 - [Quality Gates](docs/quality-gates.md)
+- [Release Checklist](docs/release-checklist.md)
 - [Observability](docs/observability.md)
 - [Roadmap](ROADMAP.md)
 - [Architecture Decision Records](docs/decisions/)
