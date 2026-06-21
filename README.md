@@ -78,6 +78,7 @@ Optional later layer:
 ## Project Documentation
 
 - [Architecture](docs/architecture.md)
+- [API Examples](docs/api-examples.md)
 - [Authentication](docs/authentication.md)
 - [Authentication API Contract](docs/auth-api-contract.md)
 - [Authentication Test Plan](docs/auth-test-plan.md)
