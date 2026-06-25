@@ -1,0 +1,2 @@
+-- Initial migration placeholder.
+-- Domain tables will be added incrementally through versioned Flyway migrations.
