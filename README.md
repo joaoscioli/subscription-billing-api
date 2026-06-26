@@ -122,6 +122,18 @@ On Windows PowerShell:
 .\mvnw.cmd test
 ```
 
+Run optional PostgreSQL integration tests with Testcontainers:
+
+```bash
+./mvnw verify -Ppostgres-integration-tests
+```
+
+On Windows PowerShell:
+
+```powershell
+.\mvnw.cmd verify -Ppostgres-integration-tests
+```
+
 ### Run the Application
 
 ```bash

@@ -78,6 +78,17 @@ On Windows PowerShell:
 
 The default suite should stay fast and should not require Docker.
 
+Run the optional PostgreSQL integration test suite:
+
+```bash
+./mvnw verify -Ppostgres-integration-tests
+```
+
+This profile runs Maven Failsafe tests named with the `IT` suffix against a
+real PostgreSQL container through Testcontainers. It is useful before larger
+persistence changes because it validates Flyway migrations against the target
+database engine.
+
 ## CI Expectations
 
 The CI pipeline should run the same default test suite used locally.
@@ -96,7 +107,8 @@ The current strategy is intentionally pragmatic, but not complete.
 
 Current gaps:
 
-- no PostgreSQL-backed Testcontainers suite yet;
+- PostgreSQL-backed Testcontainers coverage is intentionally small and focused
+  on migration fidelity;
 - no dedicated service-level unit tests for complex business rules yet;
 - no security/authentication flow tests yet;
 - no contract tests for external consumers yet;
@@ -108,8 +120,7 @@ Suggested next steps:
 
 1. Add GitHub Actions to run the default test suite on every push and pull
    request.
-2. Add selected Testcontainers tests for PostgreSQL-specific persistence
-   behavior.
+2. Expand Testcontainers coverage for PostgreSQL-specific persistence behavior.
 3. Add security tests when JWT authentication and role-based authorization are
    implemented.
 4. Add service-level tests for billing-event and subscription-status rules as
