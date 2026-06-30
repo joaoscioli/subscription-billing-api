@@ -16,6 +16,7 @@ Current automated gate:
 - compile the project with Java 21;
 - run the Maven test suite;
 - execute Flyway migrations during tests;
+- execute PostgreSQL integration checks for migration fidelity;
 - fail on broken application context;
 - fail on API behavior regressions;
 - fail on validation, persistence, or business-rule test failures.
@@ -30,6 +31,12 @@ On Windows PowerShell:
 
 ```powershell
 .\mvnw.cmd -B --no-transfer-progress test
+```
+
+PostgreSQL integration gate:
+
+```bash
+./mvnw -B --no-transfer-progress verify -Ppostgres-integration-tests
 ```
 
 ## Current Manual Review Gate
@@ -90,6 +97,7 @@ Current expectations:
 - use Java 21;
 - cache Maven dependencies;
 - use the Maven Wrapper;
+- run the PostgreSQL integration profile in a separate job;
 - cancel duplicate runs for the same branch;
 - fail clearly when tests or compilation fail.
 
@@ -98,7 +106,7 @@ Current expectations:
 These gates are intentionally lightweight for the current stage. The next
 maturity steps are:
 
-- add selected PostgreSQL Testcontainers tests;
+- expand selected PostgreSQL Testcontainers tests;
 - add security tests after JWT authentication is implemented;
 - add coverage reporting when the domain stabilizes;
 - add static analysis after the first public release is coherent;

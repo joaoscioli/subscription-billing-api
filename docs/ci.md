@@ -14,7 +14,13 @@ The workflow:
 - checks out the repository;
 - installs Java 21;
 - caches Maven dependencies;
-- runs `./mvnw -B --no-transfer-progress test`.
+- runs `./mvnw -B --no-transfer-progress test`;
+- runs `./mvnw -B --no-transfer-progress verify -Ppostgres-integration-tests`
+  in a separate PostgreSQL integration job.
+
+The default job keeps feedback fast. The PostgreSQL integration job validates
+Flyway migrations against a real PostgreSQL container on GitHub Actions
+runners, where Docker is available.
 
 ## Why This Matters
 
@@ -35,5 +41,5 @@ backend service:
 
 - Add coverage reporting.
 - Add Docker image build validation.
-- Add a separate integration-test profile when Testcontainers coverage grows.
+- Expand PostgreSQL integration coverage for persistence behavior.
 - Publish OpenAPI documentation as a CI artifact.

@@ -25,3 +25,21 @@ jobs:
 
       - name: Run tests
         run: ./mvnw -B --no-transfer-progress test
+
+  postgres-integration-test:
+    name: PostgreSQL integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Run PostgreSQL integration tests
+        run: ./mvnw -B --no-transfer-progress verify -Ppostgres-integration-tests
