@@ -8,6 +8,7 @@ import com.joaoscioli.billing.plans.DuplicatePlanCodeException;
 import com.joaoscioli.billing.plans.PlanNotFoundException;
 import com.joaoscioli.billing.subscriptions.DuplicateActiveSubscriptionException;
 import com.joaoscioli.billing.subscriptions.SubscriptionNotFoundException;
+import com.joaoscioli.billing.subscriptions.SubscriptionStateException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -93,6 +94,15 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return error(HttpStatus.NOT_FOUND, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(SubscriptionStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ApiErrorResponse handleSubscriptionState(
+            SubscriptionStateException exception,
+            HttpServletRequest request
+    ) {
+        return error(HttpStatus.CONFLICT, exception.getMessage(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

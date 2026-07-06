@@ -90,6 +90,15 @@ public class Subscription {
         this.canceledAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
+    public void renew(LocalDate nextPeriodEnd) {
+        if (this.status != SubscriptionStatus.ACTIVE) {
+            throw new SubscriptionStateException("Only active subscriptions can be renewed");
+        }
+
+        this.currentPeriodStart = this.currentPeriodEnd;
+        this.currentPeriodEnd = nextPeriodEnd;
+    }
+
     @PrePersist
     void prePersist() {
         var now = OffsetDateTime.now(ZoneOffset.UTC);

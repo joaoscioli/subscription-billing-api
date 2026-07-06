@@ -8,7 +8,8 @@ The API is currently focused on the core billing foundation:
 - customers;
 - plans;
 - subscriptions;
-- subscription cancellation.
+- subscription cancellation;
+- subscription renewal.
 
 Authentication and authorization are planned but not active yet.
 
@@ -92,6 +93,7 @@ Subscriptions connect customers to plans.
 | `GET` | `/api/organizations/{organizationSlug}/subscriptions` | List subscriptions in organization |
 | `GET` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}` | Find subscription |
 | `POST` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}/cancel` | Cancel subscription |
+| `POST` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}/renew` | Renew current billing period |
 
 Rules:
 
@@ -99,6 +101,9 @@ Rules:
 - current period is calculated from the plan billing interval;
 - one customer can have only one active subscription at a time;
 - canceling a subscription sets status to `CANCELED`;
+- renewing an active subscription moves `currentPeriodStart` to the previous
+  `currentPeriodEnd` and calculates a new `currentPeriodEnd`;
+- canceled subscriptions cannot be renewed;
 - a canceled subscription allows the customer to start a new active subscription.
 
 ## OpenAPI

@@ -77,6 +77,18 @@ public class SubscriptionService {
         return SubscriptionResponse.from(subscription);
     }
 
+    @Transactional
+    public SubscriptionResponse renew(String organizationSlug, UUID id) {
+        var subscription = getById(organizationSlug, id);
+        var nextPeriodEnd = calculateCurrentPeriodEnd(
+                subscription.getCurrentPeriodEnd(),
+                subscription.getPlan().getBillingInterval()
+        );
+        subscription.renew(nextPeriodEnd);
+
+        return SubscriptionResponse.from(subscription);
+    }
+
     private Subscription getById(String organizationSlug, UUID id) {
         var organization = organizationService.getBySlug(organizationSlug);
 

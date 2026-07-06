@@ -46,4 +46,9 @@ public class SubscriptionController {
     public SubscriptionResponse cancel(@PathVariable String organizationSlug, @PathVariable UUID id) {
         return service.cancel(organizationSlug, id);
     }
+
+    @PostMapping("/{id}/renew")
+    public SubscriptionResponse renew(@PathVariable String organizationSlug, @PathVariable UUID id) {
+        return service.renew(organizationSlug, id);
+    }
 }

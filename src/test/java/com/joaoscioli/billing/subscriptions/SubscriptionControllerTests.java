@@ -132,6 +132,49 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void renewMonthlySubscriptionAdvancesCurrentPeriod() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(subscriptionId))
+                .andExpect(jsonPath("$.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.currentPeriodStart").value("2026-07-01"))
+                .andExpect(jsonPath("$.currentPeriodEnd").value("2026-08-01"));
+    }
+
+    @Test
+    void renewYearlySubscriptionAdvancesCurrentPeriodByOneYear() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Annual", "annual", 29900, "YEARLY");
+        var subscriptionId = createSubscription("acme", customerId, "annual");
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.billingInterval").value("YEARLY"))
+                .andExpect(jsonPath("$.currentPeriodStart").value("2027-06-01"))
+                .andExpect(jsonPath("$.currentPeriodEnd").value("2028-06-01"));
+    }
+
+    @Test
+    void renewCanceledSubscriptionReturnsConflict() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", subscriptionId))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", subscriptionId))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Only active subscriptions can be renewed"));
+    }
+
+    @Test
     void canceledSubscriptionAllowsCustomerToSubscribeAgain() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
