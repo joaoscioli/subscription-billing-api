@@ -22,6 +22,10 @@ This guide helps a technical reviewer evaluate the project quickly.
   API contract, and tests.
 - Database changes are versioned with Flyway migrations.
 - The API uses structured validation and error responses.
+- Subscription lifecycle behavior is modeled with explicit workflows for
+  creation, cancellation, and renewal instead of generic record updates.
+- Domain rules are verified through API-level tests, including conflict and
+  invalid-state scenarios.
 - Documentation explains decisions, trade-offs, and future roadmap.
 - GitHub templates support review discipline.
 
