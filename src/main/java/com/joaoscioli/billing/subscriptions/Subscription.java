@@ -94,6 +94,9 @@ public class Subscription {
         if (this.status != SubscriptionStatus.ACTIVE) {
             throw new SubscriptionStateException("Only active subscriptions can be renewed");
         }
+        if (nextPeriodEnd == null || !nextPeriodEnd.isAfter(this.currentPeriodEnd)) {
+            throw new SubscriptionStateException("Renewal period end must be after the current period end");
+        }
 
         this.currentPeriodStart = this.currentPeriodEnd;
         this.currentPeriodEnd = nextPeriodEnd;
