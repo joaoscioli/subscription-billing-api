@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql(
-        statements = {"DELETE FROM application_users", "DELETE FROM subscriptions", "DELETE FROM plans", "DELETE FROM customers", "DELETE FROM organizations"},
+        statements = {"DELETE FROM application_users", "DELETE FROM subscription_events", "DELETE FROM subscriptions", "DELETE FROM plans", "DELETE FROM customers", "DELETE FROM organizations"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 class SubscriptionControllerTests {
@@ -31,6 +31,9 @@ class SubscriptionControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private SubscriptionEventRepository eventRepository;
 
     @Test
     void createSubscriptionReturnsCreatedSubscription() throws Exception {
@@ -144,6 +147,8 @@ class SubscriptionControllerTests {
                 .andExpect(jsonPath("$.status").value("ACTIVE"))
                 .andExpect(jsonPath("$.currentPeriodStart").value("2026-07-01"))
                 .andExpect(jsonPath("$.currentPeriodEnd").value("2026-08-01"));
+
+        assertEventWasRecorded(subscriptionId, SubscriptionEventType.RENEWED);
     }
 
     @Test
@@ -313,5 +318,14 @@ class SubscriptionControllerTests {
                 .andReturn();
 
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
+    }
+
+    private void assertEventWasRecorded(String subscriptionId, SubscriptionEventType eventType) {
+        var eventCount = eventRepository.countBySubscriptionIdAndEventType(
+                java.util.UUID.fromString(subscriptionId),
+                eventType
+        );
+
+        org.junit.jupiter.api.Assertions.assertEquals(1, eventCount);
     }
 }

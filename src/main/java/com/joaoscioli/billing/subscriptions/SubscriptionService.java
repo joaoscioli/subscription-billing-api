@@ -15,17 +15,20 @@ import java.util.UUID;
 public class SubscriptionService {
 
     private final SubscriptionRepository repository;
+    private final SubscriptionEventRepository eventRepository;
     private final OrganizationService organizationService;
     private final CustomerService customerService;
     private final PlanService planService;
 
     SubscriptionService(
             SubscriptionRepository repository,
+            SubscriptionEventRepository eventRepository,
             OrganizationService organizationService,
             CustomerService customerService,
             PlanService planService
     ) {
         this.repository = repository;
+        this.eventRepository = eventRepository;
         this.organizationService = organizationService;
         this.customerService = customerService;
         this.planService = planService;
@@ -50,6 +53,7 @@ public class SubscriptionService {
                 calculateCurrentPeriodEnd(startsOn, plan.getBillingInterval())
         );
         var saved = repository.save(subscription);
+        recordEvent(saved, SubscriptionEventType.CREATED, "Subscription created");
 
         return SubscriptionResponse.from(saved);
     }
@@ -72,7 +76,11 @@ public class SubscriptionService {
     @Transactional
     public SubscriptionResponse cancel(String organizationSlug, UUID id) {
         var subscription = getById(organizationSlug, id);
+        var wasActive = subscription.getStatus() == SubscriptionStatus.ACTIVE;
         subscription.cancel();
+        if (wasActive) {
+            recordEvent(subscription, SubscriptionEventType.CANCELED, "Subscription canceled");
+        }
 
         return SubscriptionResponse.from(subscription);
     }
@@ -85,8 +93,13 @@ public class SubscriptionService {
                 subscription.getPlan().getBillingInterval()
         );
         subscription.renew(nextPeriodEnd);
+        recordEvent(subscription, SubscriptionEventType.RENEWED, "Subscription renewed until " + nextPeriodEnd);
 
         return SubscriptionResponse.from(subscription);
+    }
+
+    private void recordEvent(Subscription subscription, SubscriptionEventType eventType, String description) {
+        eventRepository.save(new SubscriptionEvent(subscription, eventType, description));
     }
 
     private Subscription getById(String organizationSlug, UUID id) {
