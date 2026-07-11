@@ -73,6 +73,16 @@ public class SubscriptionService {
         return SubscriptionResponse.from(getById(organizationSlug, id));
     }
 
+    @Transactional(readOnly = true)
+    public List<SubscriptionEventResponse> listEvents(String organizationSlug, UUID id) {
+        var subscription = getById(organizationSlug, id);
+
+        return eventRepository.findAllBySubscription_IdOrderByOccurredAtAsc(subscription.getId())
+                .stream()
+                .map(SubscriptionEventResponse::from)
+                .toList();
+    }
+
     @Transactional
     public SubscriptionResponse cancel(String organizationSlug, UUID id) {
         var subscription = getById(organizationSlug, id);

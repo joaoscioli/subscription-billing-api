@@ -42,6 +42,11 @@ public class SubscriptionController {
         return service.findById(organizationSlug, id);
     }
 
+    @GetMapping("/{id}/events")
+    public List<SubscriptionEventResponse> listEvents(@PathVariable String organizationSlug, @PathVariable UUID id) {
+        return service.listEvents(organizationSlug, id);
+    }
+
     @PostMapping("/{id}/cancel")
     public SubscriptionResponse cancel(@PathVariable String organizationSlug, @PathVariable UUID id) {
         return service.cancel(organizationSlug, id);

@@ -121,6 +121,25 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void listSubscriptionEventsReturnsLifecycleAuditTrail() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", subscriptionId))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].subscriptionId").value(subscriptionId))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"))
+                .andExpect(jsonPath("$[0].occurredAt").isNotEmpty())
+                .andExpect(jsonPath("$[1].eventType").value("RENEWED"))
+                .andExpect(jsonPath("$[1].description").value("Subscription renewed until 2026-08-01"));
+    }
+
+    @Test
     void cancelSubscriptionReturnsCanceledSubscription() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
@@ -321,7 +340,7 @@ class SubscriptionControllerTests {
     }
 
     private void assertEventWasRecorded(String subscriptionId, SubscriptionEventType eventType) {
-        var eventCount = eventRepository.countBySubscriptionIdAndEventType(
+        var eventCount = eventRepository.countBySubscription_IdAndEventType(
                 java.util.UUID.fromString(subscriptionId),
                 eventType
         );

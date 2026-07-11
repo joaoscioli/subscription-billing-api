@@ -61,6 +61,10 @@ public class SubscriptionEvent {
         return id;
     }
 
+    public UUID getSubscriptionId() {
+        return subscription.getId();
+    }
+
     public SubscriptionEventType getEventType() {
         return eventType;
     }
