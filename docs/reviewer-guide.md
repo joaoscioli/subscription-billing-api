@@ -11,9 +11,10 @@ This guide helps a technical reviewer evaluate the project quickly.
    for consistent API error handling.
 5. Review one vertical slice, such as `subscriptions`, from controller to
    repository and tests.
-6. Read `docs/test-strategy.md` and `.github/workflows/ci.yml` to confirm the
+6. Inspect the subscription event audit trail to see lifecycle traceability.
+7. Read `docs/test-strategy.md` and `.github/workflows/ci.yml` to confirm the
    feedback loop.
-7. Scan `docs/decisions/` for architecture decision records.
+8. Scan `docs/decisions/` for architecture decision records.
 
 ## Strong Signals
 
@@ -24,6 +25,8 @@ This guide helps a technical reviewer evaluate the project quickly.
 - The API uses structured validation and error responses.
 - Subscription lifecycle behavior is modeled with explicit workflows for
   creation, cancellation, and renewal instead of generic record updates.
+- Subscription lifecycle events make operational traceability part of the
+  domain model.
 - Domain rules are verified through API-level tests, including conflict and
   invalid-state scenarios.
 - Documentation explains decisions, trade-offs, and future roadmap.
@@ -32,7 +35,7 @@ This guide helps a technical reviewer evaluate the project quickly.
 ## Current Gaps To Discuss Honestly
 
 - Authentication is being built incrementally.
-- Billing events are planned as the next business capability.
+- Invoice and payment flows are planned as the next business capability.
 - Deployment is documented but not yet automated.
 - Observability is documented and should evolve with real runtime metrics.
 
