@@ -9,7 +9,8 @@ The API is currently focused on the core billing foundation:
 - plans;
 - subscriptions;
 - subscription cancellation;
-- subscription renewal.
+- subscription renewal;
+- subscription lifecycle audit events.
 
 Authentication and authorization are planned but not active yet.
 
@@ -92,6 +93,7 @@ Subscriptions connect customers to plans.
 | `POST` | `/api/organizations/{organizationSlug}/subscriptions` | Create subscription |
 | `GET` | `/api/organizations/{organizationSlug}/subscriptions` | List subscriptions in organization |
 | `GET` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}` | Find subscription |
+| `GET` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}/events` | List subscription lifecycle events |
 | `POST` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}/cancel` | Cancel subscription |
 | `POST` | `/api/organizations/{organizationSlug}/subscriptions/{subscriptionId}/renew` | Renew current billing period |
 
@@ -105,6 +107,12 @@ Rules:
   `currentPeriodEnd` and calculates a new `currentPeriodEnd`;
 - canceled subscriptions cannot be renewed;
 - a canceled subscription allows the customer to start a new active subscription.
+
+Audit events:
+
+- creation, cancellation, and renewal actions are recorded as lifecycle events;
+- event responses include event type, description, timestamp, and subscription id;
+- the event endpoint is intended for support, debugging, and operational traceability.
 
 ## OpenAPI
 
