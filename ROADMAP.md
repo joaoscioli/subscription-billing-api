@@ -42,6 +42,12 @@ Done when:
 - subscription status changes are covered by tests;
 - API docs include examples.
 
+Next portfolio increment:
+
+- add invoice generation for renewed subscriptions;
+- expose invoice history by organization and customer;
+- document how invoices relate to subscription lifecycle events.
+
 ## v0.3 - Observability and Operations
 
 Goal: show production-minded backend practices.
