@@ -95,6 +95,13 @@ Optional later layer:
 - [Roadmap](ROADMAP.md)
 - [Architecture Decision Records](docs/decisions/)
 
+## Interview Checkpoint
+
+A reviewer should start with the subscription lifecycle because it shows the
+main engineering signal of this project: domain rules, persistence, API
+contracts, validation, tests, and audit events working together in one vertical
+slice.
+
 ## Getting Started
 
 ### Requirements
