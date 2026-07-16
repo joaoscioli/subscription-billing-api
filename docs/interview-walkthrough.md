@@ -29,6 +29,14 @@ interview.
 - Why a simulated billing flow is enough before real payment integration.
 - How CI protects the main portfolio project.
 
+## Questions This Project Can Answer
+
+- How would you model subscription lifecycle rules without turning everything
+  into CRUD?
+- How do database migrations, API tests, and domain invariants work together?
+- What should be audited in a billing system before real payments are added?
+- Which parts would you split first if this modular monolith grew?
+
 ## Honest Current Gaps
 
 - JWT authentication is still being completed.
