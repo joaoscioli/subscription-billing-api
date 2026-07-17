@@ -39,6 +39,12 @@ This guide helps a technical reviewer evaluate the project quickly.
 - Deployment is documented but not yet automated.
 - Observability is documented and should evolve with real runtime metrics.
 
+## Next Practical Step
+
+The next implementation step should add a minimal invoice read model connected
+to subscription renewal events. That would turn the current lifecycle work into
+a stronger billing-domain story without requiring a real payment provider.
+
 ## Interview Framing
 
 This repository should be presented as a compact backend system designed to
