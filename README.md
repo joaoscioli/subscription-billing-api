@@ -102,6 +102,12 @@ main engineering signal of this project: domain rules, persistence, API
 contracts, validation, tests, and audit events working together in one vertical
 slice.
 
+## Portfolio Proof
+
+This project is the main proof of backend ownership in the portfolio. It shows
+how a Java API can evolve from product scope to persistence, tests, operational
+documentation, and reviewable domain decisions.
+
 ## Getting Started
 
 ### Requirements
