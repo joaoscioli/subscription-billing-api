@@ -290,13 +290,25 @@ Find a subscription by id:
 GET /api/organizations/acme/subscriptions/{subscriptionId}
 ```
 
+List subscription lifecycle events:
+
+```http
+GET /api/organizations/acme/subscriptions/{subscriptionId}/events
+```
+
 Cancel a subscription:
 
 ```http
 POST /api/organizations/acme/subscriptions/{subscriptionId}/cancel
 ```
 
-The first subscription flow creates an `ACTIVE` subscription and calculates the current billing period from the selected plan interval. A customer can have only one active subscription in this MVP. Canceling a subscription changes its status to `CANCELED` and allows the customer to start a new active subscription.
+Renew a subscription:
+
+```http
+POST /api/organizations/acme/subscriptions/{subscriptionId}/renew
+```
+
+The first subscription flow creates an `ACTIVE` subscription and calculates the current billing period from the selected plan interval. A customer can have only one active subscription in this MVP. Canceling a subscription changes its status to `CANCELED` and allows the customer to start a new active subscription. Lifecycle events are recorded for creation, cancellation, and renewal.
 
 ## Initial Success Criteria
 
