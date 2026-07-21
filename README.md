@@ -93,6 +93,7 @@ Optional later layer:
 - [Release Checklist](docs/release-checklist.md)
 - [Observability](docs/observability.md)
 - [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
 - [Architecture Decision Records](docs/decisions/)
 
 ## Interview Checkpoint
