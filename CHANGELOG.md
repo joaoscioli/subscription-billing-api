@@ -2,6 +2,9 @@
 
 This project follows small, reviewable increments. Dates use `YYYY-MM-DD`.
 
+Review cadence: each portfolio update should explain the backend capability
+added, the reviewer signal improved, and the next production-minded step.
+
 ## Unreleased
 
 - Planned: invoice read model connected to subscription renewals.
