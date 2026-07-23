@@ -5,6 +5,12 @@ This project follows small, reviewable increments. Dates use `YYYY-MM-DD`.
 Review cadence: each portfolio update should explain the backend capability
 added, the reviewer signal improved, and the next production-minded step.
 
+## How To Discuss This History
+
+Use this changelog to explain how the backend evolved from API foundation to
+domain traceability. The strongest discussion is the subscription lifecycle:
+rules first, persistence second, auditability third.
+
 ## Unreleased
 
 - Planned: invoice read model connected to subscription renewals.
