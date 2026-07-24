@@ -11,6 +11,11 @@ Use this changelog to explain how the backend evolved from API foundation to
 domain traceability. The strongest discussion is the subscription lifecycle:
 rules first, persistence second, auditability third.
 
+## Review Readiness
+
+Ready for interview review when the README, API overview, reviewer guide, and
+changelog tell the same story about the subscription lifecycle.
+
 ## Unreleased
 
 - Planned: invoice read model connected to subscription renewals.
