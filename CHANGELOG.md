@@ -16,6 +16,9 @@ rules first, persistence second, auditability third.
 Ready for interview review when the README, API overview, reviewer guide, and
 changelog tell the same story about the subscription lifecycle.
 
+Current public signal: a compact Spring Boot billing backend with lifecycle
+rules, persistence, tests, audit events, and documentation aligned.
+
 ## Unreleased
 
 - Planned: invoice read model connected to subscription renewals.
