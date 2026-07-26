@@ -341,3 +341,5 @@ Recommended commit style:
 - `test: add integration tests for billing flow`
 - `docs: describe authentication flow`
 - `ci: add build and test workflow`
+
+Project documentation is actively maintained.
