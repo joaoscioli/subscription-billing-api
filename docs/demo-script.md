@@ -17,3 +17,9 @@ Use this short script to present the project in a technical interview.
 - The project is intentionally a modular monolith.
 - Subscription behavior is modeled as business workflow, not generic CRUD.
 - Auditability was added before real payment integration.
+
+## Before The Interview
+
+- Have one subscription lifecycle example ready.
+- Be prepared to explain why audit events were added early.
+- Know the next implementation step: invoice read models.
