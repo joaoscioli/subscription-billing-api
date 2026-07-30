@@ -23,3 +23,9 @@ Use this short script to present the project in a technical interview.
 - Have one subscription lifecycle example ready.
 - Be prepared to explain why audit events were added early.
 - Know the next implementation step: invoice read models.
+
+## Avoid Saying
+
+- "It is only a CRUD." Instead, explain the lifecycle rules and audit trail.
+- "Payments are missing." Instead, explain why simulated billing comes before a
+  real provider.
