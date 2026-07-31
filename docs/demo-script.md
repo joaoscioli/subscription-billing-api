@@ -24,6 +24,13 @@ Use this short script to present the project in a technical interview.
 - Be prepared to explain why audit events were added early.
 - Know the next implementation step: invoice read models.
 
+## Evidence To Open
+
+- `src/main/java/com/joaoscioli/billing/subscriptions/SubscriptionService.java`
+- `src/main/java/com/joaoscioli/billing/subscriptions/SubscriptionController.java`
+- `src/test/java/com/joaoscioli/billing/subscriptions/SubscriptionControllerTests.java`
+- `docs/api-overview.md`
+
 ## Avoid Saying
 
 - "It is only a CRUD." Instead, explain the lifecycle rules and audit trail.
