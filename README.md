@@ -81,6 +81,7 @@ Optional later layer:
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
+- [Interview Questions](docs/interview-questions.md)
 - [Demo Script](docs/demo-script.md)
 - [Authentication](docs/authentication.md)
 - [Authentication API Contract](docs/auth-api-contract.md)
