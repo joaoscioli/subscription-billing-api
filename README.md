@@ -81,6 +81,7 @@ Optional later layer:
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
 - [Reviewer Scorecard](docs/reviewer-scorecard.md)
+- [Technical Depth Map](docs/technical-depth-map.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
 - [Demo Script](docs/demo-script.md)
