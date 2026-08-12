@@ -1,19 +1,19 @@
 ## Summary
 
-- 
+Describe the backend change and the business workflow it supports.
+
+## Reviewer Focus
+
+- [ ] API contract is clear.
+- [ ] Domain rule or operational concern is explained.
+- [ ] Tests or documentation make the behavior reviewable.
 
 ## Validation
 
-- [ ] Tests pass locally
-- [ ] API behavior was reviewed
-- [ ] Documentation was updated when needed
-- [ ] Security or authorization impact was considered
-- [ ] Database migration impact was considered
-
-## Review Notes
-
-- 
+- [ ] Unit tests added or updated when behavior changed.
+- [ ] API or integration tests added or updated when endpoints changed.
+- [ ] Documentation updated when the reviewer path changed.
 
 ## Portfolio Signal
 
-- [ ] This change keeps the project easy to explain in a technical interview
+Explain what this PR makes stronger for a technical interview.
