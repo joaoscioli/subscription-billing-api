@@ -1,2 +1,12 @@
-# Default repository owner
+# Repository owner
 * @joaoscioli
+
+# Backend implementation
+/src/main/java/ @joaoscioli
+/src/test/java/ @joaoscioli
+
+# Architecture, decisions, and operations
+/docs/ @joaoscioli
+/.github/ @joaoscioli
+/docker-compose.yml @joaoscioli
+/pom.xml @joaoscioli
