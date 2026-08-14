@@ -1,28 +1,32 @@
 # Security Policy
 
-This repository is a portfolio-grade backend project and should avoid exposing
-real credentials, secrets, tokens, or production data.
+This repository is a portfolio project, but security concerns should still be
+handled with production-minded care.
 
 ## Supported Scope
 
-Security review focuses on:
+Security feedback is welcome for:
 
 - authentication and authorization behavior;
 - API input validation;
-- sensitive configuration handling;
-- dependency risk;
-- database migration safety;
-- accidental secret exposure.
+- dependency or build vulnerabilities;
+- accidental secret exposure;
+- insecure defaults in local configuration.
 
-## Reporting A Security Concern
+## Reporting
 
-Do not open a public issue with secrets or exploitable details. Prefer a private
-message or a minimal issue that states the affected area without exposing
-sensitive data.
+Please do not open a public issue with exploit details or sensitive data.
 
-## Development Practices
+Send a private report to `joaoscioli@outlook.com` with:
 
-- Keep secrets out of Git.
-- Use environment variables for local credentials.
-- Review API authorization before adding new endpoints.
-- Update tests when security behavior changes.
+- a short description of the risk;
+- affected files, endpoints, or dependencies;
+- steps to reproduce when possible;
+- suggested mitigation if known.
+
+## Security Expectations
+
+- Secrets must not be committed.
+- Example credentials must stay local-only and clearly documented.
+- Authentication, authorization, and database changes should include tests or
+  review notes.
