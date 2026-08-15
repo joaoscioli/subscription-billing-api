@@ -16,6 +16,13 @@ This repository is maintained as a portfolio-grade backend project.
 - Check whether an ADR or documentation update is needed.
 - Use the pull request template as a review checklist.
 
+## Portfolio Contribution Discipline
+
+- Start from a small issue with a clear reviewer signal.
+- Keep each pull request narrow enough to explain in five minutes.
+- Prefer changes that add behavior, tests, or documentation evidence together.
+- Avoid broad rewrites unless they protect a specific architectural decision.
+
 ## Review Focus
 
 Reviewers should look for correctness, maintainability, test coverage,
