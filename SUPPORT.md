@@ -19,6 +19,11 @@ make the API easier to understand, run, test, or review.
 - A test does not explain the business rule it protects.
 - A documentation page does not match the current implementation.
 
+## Review Questions
+
+For portfolio or interview review, include the file, endpoint, or test being
+discussed and the engineering decision you want to evaluate.
+
 ## Out Of Scope
 
 - Production support for a real billing system.
