@@ -86,6 +86,7 @@ Optional later layer:
 - [Hiring Manager Summary](docs/hiring-manager-summary.md)
 - [30-Second Pitch](docs/30-second-pitch.md)
 - [Interview Route](docs/interview-route.md)
+- [Interview Case Study](docs/interview-case-study.md)
 - [Key Talking Points](docs/key-talking-points.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
