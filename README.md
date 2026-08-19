@@ -120,6 +120,12 @@ This project is the main proof of backend ownership in the portfolio. It shows
 how a Java API can evolve from product scope to persistence, tests, operational
 documentation, and reviewable domain decisions.
 
+## Fast Review Path
+
+1. Read the [30-Second Pitch](docs/30-second-pitch.md) to understand the project signal.
+2. Open the [Interview Case Study](docs/interview-case-study.md) to follow the main technical story.
+3. Inspect the subscription lifecycle tests and service to validate the backend implementation.
+
 ## Getting Started
 
 ### Requirements
