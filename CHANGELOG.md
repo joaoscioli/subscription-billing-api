@@ -24,6 +24,14 @@ rules, persistence, tests, audit events, and documentation aligned.
 - Planned: invoice read model connected to subscription renewals.
 - Planned: stronger authentication and authorization coverage.
 
+## 2026-08 Interview Readiness
+
+- Added fast review path, interview case study, and stronger reviewer guidance.
+- Refined GitHub hygiene with issue, pull request, CODEOWNERS, security, support,
+  contributing, and Dependabot configuration updates.
+- Clarified how to present the subscription lifecycle as the main backend
+  evidence in technical interviews.
+
 ## 2026-07 Portfolio Hardening
 
 - Added subscription lifecycle event recording.
