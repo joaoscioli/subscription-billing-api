@@ -88,6 +88,7 @@ Optional later layer:
 - [Interview Route](docs/interview-route.md)
 - [Interview Case Study](docs/interview-case-study.md)
 - [Key Talking Points](docs/key-talking-points.md)
+- [Pre-Interview Checklist](docs/pre-interview-checklist.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
