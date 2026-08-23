@@ -90,6 +90,7 @@ Optional later layer:
 - [Key Talking Points](docs/key-talking-points.md)
 - [Pre-Interview Checklist](docs/pre-interview-checklist.md)
 - [Tough Interview Questions](docs/tough-interview-questions.md)
+- [Senior Review Notes](docs/senior-review-notes.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
