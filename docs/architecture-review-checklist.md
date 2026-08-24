@@ -1,26 +1,25 @@
 # Architecture Review Checklist
 
-Use this checklist to review the project as a backend architecture exercise.
+Use this checklist to review the project's backend architecture. Support each item with code, tests, configuration, or documentation.
 
 ## Domain Boundary
 
-- Subscription, plan, billing, cancellation, and renewal concepts are explicit.
-- Business decisions live near the domain model, not hidden in controllers.
-- External payment concerns are isolated behind clear integration boundaries.
+- [ ] Subscription, plan, billing, cancellation, and renewal concepts are explicit.
+- [ ] Domain services own business decisions; controllers coordinate requests.
+- [ ] Payment providers remain behind explicit integration boundaries.
 
 ## API Boundary
 
-- Endpoints expose use cases, not internal persistence details.
-- Error responses are predictable and documented.
-- Request validation protects invalid lifecycle transitions.
+- [ ] Endpoints expose use cases without leaking persistence details.
+- [ ] Error responses are consistent and documented.
+- [ ] Validation rejects invalid lifecycle transitions.
 
 ## Operational Readiness
 
-- Logs, metrics, and audit events can explain important subscription changes.
-- Secrets and provider credentials are kept outside source control.
-- Future production gaps are documented before the project claims maturity.
+- [ ] Logs, metrics, and audit events explain important subscription changes.
+- [ ] Secrets and provider credentials remain outside source control.
+- [ ] Known production gaps are explicit and prioritized.
 
-## Interview Defense
+## Architecture Defense
 
-Be ready to explain why a modular monolith is enough here, and what signal would
-justify splitting billing, invoicing, and payment integration later.
+Be ready to explain why a modular monolith fits today, the evidence that it works, and the signal that would justify splitting billing, invoicing, or payment integration.
