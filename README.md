@@ -91,6 +91,7 @@ Optional later layer:
 - [Pre-Interview Checklist](docs/pre-interview-checklist.md)
 - [Tough Interview Questions](docs/tough-interview-questions.md)
 - [Senior Review Notes](docs/senior-review-notes.md)
+- [Architecture Review Checklist](docs/architecture-review-checklist.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
