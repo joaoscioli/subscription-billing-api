@@ -94,6 +94,7 @@ Optional later layer:
 - [Architecture Review Checklist](docs/architecture-review-checklist.md)
 - [Business Value](docs/business-value.md)
 - [Technical Debt Register](docs/technical-debt-register.md)
+- [Decision Log](docs/decision-log.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
