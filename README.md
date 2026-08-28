@@ -95,6 +95,7 @@ Optional later layer:
 - [Business Value](docs/business-value.md)
 - [Technical Debt Register](docs/technical-debt-register.md)
 - [Decision Log](docs/decision-log.md)
+- [Production Readiness Matrix](docs/production-readiness-matrix.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
