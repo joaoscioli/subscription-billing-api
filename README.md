@@ -98,6 +98,7 @@ Optional later layer:
 - [Production Readiness Matrix](docs/production-readiness-matrix.md)
 - [Demo Evaluation Rubric](docs/demo-evaluation-rubric.md)
 - [Maintenance Plan](docs/maintenance-plan.md)
+- [Repository Health Scorecard](docs/repository-health-scorecard.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
