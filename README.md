@@ -99,6 +99,7 @@ Optional later layer:
 - [Demo Evaluation Rubric](docs/demo-evaluation-rubric.md)
 - [Maintenance Plan](docs/maintenance-plan.md)
 - [Repository Health Scorecard](docs/repository-health-scorecard.md)
+- [Reviewer FAQ](docs/reviewer-faq.md)
 - [Next Review Focus](docs/next-review-focus.md)
 - [Interview Walkthrough](docs/interview-walkthrough.md)
 - [Interview Questions](docs/interview-questions.md)
