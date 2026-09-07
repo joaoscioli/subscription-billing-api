@@ -77,6 +77,7 @@ Optional later layer:
 
 ## Project Documentation
 
+- [Portfolio Review Index](docs/portfolio-review-index.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
