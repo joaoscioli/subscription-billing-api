@@ -79,6 +79,7 @@ Optional later layer:
 
 - [Portfolio Review Index](docs/portfolio-review-index.md)
 - [Evidence Map](docs/evidence-map.md)
+- [Engineering Impact](docs/engineering-impact.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
