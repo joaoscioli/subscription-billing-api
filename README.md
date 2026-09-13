@@ -82,6 +82,7 @@ Optional later layer:
 - [Engineering Impact](docs/engineering-impact.md)
 - [Technical Scope](docs/technical-scope.md)
 - [Reviewer Entrypoint](docs/reviewer-entrypoint.md)
+- [Next Demo Slice](docs/next-demo-slice.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
