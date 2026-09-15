@@ -83,6 +83,7 @@ Optional later layer:
 - [Technical Scope](docs/technical-scope.md)
 - [Reviewer Entrypoint](docs/reviewer-entrypoint.md)
 - [Next Demo Slice](docs/next-demo-slice.md)
+- [Technical Risks](docs/technical-risks.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
