@@ -84,6 +84,7 @@ Optional later layer:
 - [Reviewer Entrypoint](docs/reviewer-entrypoint.md)
 - [Next Demo Slice](docs/next-demo-slice.md)
 - [Technical Risks](docs/technical-risks.md)
+- [Implementation Priority](docs/implementation-priority.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
