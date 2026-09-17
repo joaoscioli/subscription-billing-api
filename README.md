@@ -85,6 +85,7 @@ Optional later layer:
 - [Next Demo Slice](docs/next-demo-slice.md)
 - [Technical Risks](docs/technical-risks.md)
 - [Implementation Priority](docs/implementation-priority.md)
+- [Acceptance Criteria](docs/acceptance-criteria.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
