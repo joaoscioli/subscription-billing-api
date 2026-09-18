@@ -86,6 +86,7 @@ Optional later layer:
 - [Technical Risks](docs/technical-risks.md)
 - [Implementation Priority](docs/implementation-priority.md)
 - [Acceptance Criteria](docs/acceptance-criteria.md)
+- [Demo Readiness Checklist](docs/demo-readiness-checklist.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
