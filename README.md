@@ -87,6 +87,7 @@ Optional later layer:
 - [Implementation Priority](docs/implementation-priority.md)
 - [Acceptance Criteria](docs/acceptance-criteria.md)
 - [Demo Readiness Checklist](docs/demo-readiness-checklist.md)
+- [Reviewer Question Bank](docs/reviewer-question-bank.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
