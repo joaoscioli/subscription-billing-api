@@ -89,6 +89,7 @@ Optional later layer:
 - [Demo Readiness Checklist](docs/demo-readiness-checklist.md)
 - [Reviewer Question Bank](docs/reviewer-question-bank.md)
 - [Interview Defense Notes](docs/interview-defense-notes.md)
+- [Seniority Evidence](docs/seniority-evidence.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
