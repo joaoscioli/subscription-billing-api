@@ -90,6 +90,7 @@ Optional later layer:
 - [Reviewer Question Bank](docs/reviewer-question-bank.md)
 - [Interview Defense Notes](docs/interview-defense-notes.md)
 - [Seniority Evidence](docs/seniority-evidence.md)
+- [Recruiter Summary](docs/recruiter-summary.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
