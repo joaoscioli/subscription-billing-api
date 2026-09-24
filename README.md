@@ -93,6 +93,7 @@ Optional later layer:
 - [Recruiter Summary](docs/recruiter-summary.md)
 - [Technical Elevator Pitch](docs/technical-elevator-pitch.md)
 - [Technical Review Map](docs/technical-review-map.md)
+- [Interview Evaluation Criteria](docs/interview-evaluation-criteria.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
