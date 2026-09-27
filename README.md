@@ -95,6 +95,7 @@ Optional later layer:
 - [Technical Review Map](docs/technical-review-map.md)
 - [Interview Evaluation Criteria](docs/interview-evaluation-criteria.md)
 - [Deep Dive Prompts](docs/deep-dive-prompts.md)
+- [Hiring Signal](docs/hiring-signal.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
