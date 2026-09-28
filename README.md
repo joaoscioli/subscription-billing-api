@@ -96,6 +96,7 @@ Optional later layer:
 - [Interview Evaluation Criteria](docs/interview-evaluation-criteria.md)
 - [Deep Dive Prompts](docs/deep-dive-prompts.md)
 - [Hiring Signal](docs/hiring-signal.md)
+- [Technical Differentiators](docs/technical-differentiators.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
