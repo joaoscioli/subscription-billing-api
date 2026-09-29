@@ -97,6 +97,7 @@ Optional later layer:
 - [Deep Dive Prompts](docs/deep-dive-prompts.md)
 - [Hiring Signal](docs/hiring-signal.md)
 - [Technical Differentiators](docs/technical-differentiators.md)
+- [Next Technical Evolution](docs/next-technical-evolution.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
