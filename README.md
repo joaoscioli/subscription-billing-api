@@ -98,6 +98,7 @@ Optional later layer:
 - [Hiring Signal](docs/hiring-signal.md)
 - [Technical Differentiators](docs/technical-differentiators.md)
 - [Next Technical Evolution](docs/next-technical-evolution.md)
+- [Implementation Readiness](docs/implementation-readiness.md)
 - [Architecture](docs/architecture.md)
 - [API Examples](docs/api-examples.md)
 - [Reviewer Guide](docs/reviewer-guide.md)
