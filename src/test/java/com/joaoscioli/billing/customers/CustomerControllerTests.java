@@ -130,6 +130,22 @@ class CustomerControllerTests {
                 .andExpect(jsonPath("$.message").value("Organization not found: missing"));
     }
 
+    @Test
+    void findCustomerFromAnotherOrganizationReturnsNotFound() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        createOrganization("Beta Labs", "beta-labs");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+
+        mockMvc.perform(get("/api/organizations/beta-labs/customers/{id}", customerId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Customer not found: " + customerId));
+
+        mockMvc.perform(get("/api/organizations/acme/customers/{id}", customerId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(customerId))
+                .andExpect(jsonPath("$.organizationSlug").value("acme"));
+    }
+
     private void createOrganization(String name, String slug) throws Exception {
         mockMvc.perform(post("/api/organizations")
                         .contentType(MediaType.APPLICATION_JSON)
