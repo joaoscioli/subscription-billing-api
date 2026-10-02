@@ -2,6 +2,8 @@ package com.joaoscioli.billing.subscriptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -279,6 +281,32 @@ class SubscriptionControllerTests {
                                 """.formatted(missingCustomerId)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Customer not found: " + missingCustomerId));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"cancel", "renew"})
+    void rejectsCrossOrganizationMutationsWithoutChangingStateOrAuditTrail(String operation) throws Exception {
+        createOrganization("Acme Inc", "acme");
+        createOrganization("Beta Labs", "beta-labs");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+
+        mockMvc.perform(post("/api/organizations/beta-labs/subscriptions/{id}/{operation}",
+                        subscriptionId, operation))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Subscription not found: " + subscriptionId));
+
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.currentPeriodStart").value("2026-06-01"))
+                .andExpect(jsonPath("$.currentPeriodEnd").value("2026-07-01"))
+                .andExpect(jsonPath("$.canceledAt").doesNotExist());
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"));
     }
 
     private void createOrganization(String name, String slug) throws Exception {
