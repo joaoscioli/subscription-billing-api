@@ -309,6 +309,38 @@ class SubscriptionControllerTests {
                 .andExpect(jsonPath("$[0].eventType").value("CREATED"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"customer", "plan"})
+    void rejectsForeignCreationReferencesWithoutPersistingSubscriptionOrEvent(String foreignReference) throws Exception {
+        createOrganization("Acme Inc", "acme");
+        createOrganization("Beta Labs", "beta-labs");
+        var localCustomerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        var foreignCustomerId = createCustomer("beta-labs", "Alan Turing", "alan@beta-labs.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        createPlan("beta-labs", "Foreign", "foreign", 3900, "MONTHLY");
+        var customerId = foreignReference.equals("customer") ? foreignCustomerId : localCustomerId;
+        var planCode = foreignReference.equals("plan") ? "foreign" : "starter";
+        var message = foreignReference.equals("customer")
+                ? "Customer not found: " + customerId : "Plan not found: foreign";
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"customerId":"%s","planCode":"%s","startsOn":"2026-06-01"}
+                                """.formatted(customerId, planCode)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(message));
+
+        for (var slug : new String[]{"acme", "beta-labs"}) {
+            mockMvc.perform(get("/api/organizations/{slug}/subscriptions", slug))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(0)));
+        }
+        org.junit.jupiter.api.Assertions.assertEquals(0, eventRepository.count());
+        // A rejected attempt must not block a subsequent valid subscription.
+        createSubscription("acme", localCustomerId, "starter");
+    }
+
     private void createOrganization(String name, String slug) throws Exception {
         mockMvc.perform(post("/api/organizations")
                         .contentType(MediaType.APPLICATION_JSON)
