@@ -341,6 +341,31 @@ class SubscriptionControllerTests {
         createSubscription("acme", localCustomerId, "starter");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"", "/events"})
+    void rejectsForeignSubscriptionReadsWithoutExposingDetailsOrAuditTrail(String suffix) throws Exception {
+        createOrganization("Acme Inc", "acme");
+        createOrganization("Beta Labs", "beta-labs");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+
+        mockMvc.perform(get("/api/organizations/beta-labs/subscriptions/" + subscriptionId + suffix))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Subscription not found: " + subscriptionId))
+                .andExpect(jsonPath("$.customerId").doesNotExist())
+                .andExpect(jsonPath("$.planCode").doesNotExist())
+                .andExpect(jsonPath("$.eventType").doesNotExist());
+
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.customerId").value(customerId));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+    }
+
     private void createOrganization(String name, String slug) throws Exception {
         mockMvc.perform(post("/api/organizations")
                         .contentType(MediaType.APPLICATION_JSON)
