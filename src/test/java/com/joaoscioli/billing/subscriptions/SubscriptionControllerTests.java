@@ -156,6 +156,40 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void repeatedCancellationPreservesPersistedTimestampAndSingleAuditEvent() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var subscriptionId = createSubscription("acme", customerId, "starter");
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", subscriptionId))
+                .andExpect(status().isOk());
+        // Read after commit so the comparison uses persisted timestamp precision.
+        var firstRead = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canceledAt").isNotEmpty())
+                .andReturn();
+        var canceledAt = objectMapper.readTree(firstRead.getResponse().getContentAsString())
+                .get("canceledAt").asText();
+
+        for (int attempt = 0; attempt < 2; attempt++) {
+            mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", subscriptionId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.status").value("CANCELED"))
+                    .andExpect(jsonPath("$.canceledAt").value(canceledAt));
+        }
+
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CANCELED"))
+                .andExpect(jsonPath("$.canceledAt").value(canceledAt))
+                .andExpect(jsonPath("$.currentPeriodEnd").value("2026-07-01"));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].eventType", containsInAnyOrder("CREATED", "CANCELED")));
+    }
+
+    @Test
     void renewMonthlySubscriptionAdvancesCurrentPeriod() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
