@@ -3,6 +3,7 @@ package com.joaoscioli.billing.subscriptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -398,6 +399,41 @@ class SubscriptionControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "MONTHLY, 2026-01-31, 2026-02-28, 2026-03-28",
+            "MONTHLY, 2024-01-31, 2024-02-29, 2024-03-29",
+            "YEARLY, 2024-02-29, 2025-02-28, 2026-02-28"
+    })
+    void calendarBoundariesPersistAndRenewFromThePreviousPeriodEnd(
+            String interval, String startsOn, String firstEnd, String renewedEnd) throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Calendar", "calendar", 2900, interval);
+        var created = mockMvc.perform(post("/api/organizations/acme/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"customerId":"%s","planCode":"calendar","startsOn":"%s"}
+                                """.formatted(customerId, startsOn)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currentPeriodEnd").value(firstEnd))
+                .andReturn();
+        var id = objectMapper.readTree(created.getResponse().getContentAsString()).get("id").asText();
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", id))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.startsOn").value(startsOn))
+                .andExpect(jsonPath("$.currentPeriodStart").value(firstEnd))
+                .andExpect(jsonPath("$.currentPeriodEnd").value(renewedEnd));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[1].eventType").value("RENEWED"))
+                .andExpect(jsonPath("$[1].description").value("Subscription renewed until " + renewedEnd));
     }
 
     private void createOrganization(String name, String slug) throws Exception {
