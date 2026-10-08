@@ -230,9 +230,23 @@ class SubscriptionControllerTests {
         mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", subscriptionId))
                 .andExpect(status().isOk());
 
+        var before = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", subscriptionId))
+                .andExpect(status().isOk()).andReturn();
+        var persistedBefore = objectMapper.readTree(before.getResponse().getContentAsString());
+
         mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", subscriptionId))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Only active subscriptions can be renewed"));
+
+        var after = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", subscriptionId))
+                .andExpect(status().isOk()).andReturn();
+        org.junit.jupiter.api.Assertions.assertEquals(persistedBefore,
+                objectMapper.readTree(after.getResponse().getContentAsString()),
+                "Rejected renewal must preserve all persisted subscription fields");
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", subscriptionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].eventType", containsInAnyOrder("CREATED", "CANCELED")));
     }
 
     @Test
