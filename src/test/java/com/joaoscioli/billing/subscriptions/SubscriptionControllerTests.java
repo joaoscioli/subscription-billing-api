@@ -39,6 +39,38 @@ class SubscriptionControllerTests {
     private SubscriptionEventRepository eventRepository;
 
     @Test
+    void failedCreationAuditLeavesNoSubscriptionAndAllowsRetryForTheSameCustomer() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var failure = new IllegalStateException("audit store unavailable");
+        org.mockito.Mockito.doThrow(failure).when(eventRepository)
+                .save(org.mockito.ArgumentMatchers.any(SubscriptionEvent.class));
+
+        try {
+            var exception = org.junit.jupiter.api.Assertions.assertThrows(jakarta.servlet.ServletException.class,
+                    () -> createSubscription("acme", customerId, "starter"));
+            org.junit.jupiter.api.Assertions.assertSame(failure, exception.getCause());
+        } finally {
+            org.mockito.Mockito.reset(eventRepository);
+        }
+
+        // These reads occur after the failed request's transaction has rolled back.
+        mockMvc.perform(get("/api/organizations/acme/subscriptions"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(0)));
+        org.junit.jupiter.api.Assertions.assertEquals(0, eventRepository.count());
+
+        var id = createSubscription("acme", customerId, "starter");
+        mockMvc.perform(get("/api/organizations/acme/subscriptions"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(id));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+        org.junit.jupiter.api.Assertions.assertEquals(1, eventRepository.count());
+    }
+
+    @Test
     void auditWriteFailureRollsBackRenewalAndAllowsAnExplicitRetry() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
