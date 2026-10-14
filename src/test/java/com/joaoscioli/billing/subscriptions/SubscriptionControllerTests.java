@@ -39,6 +39,46 @@ class SubscriptionControllerTests {
     private SubscriptionEventRepository eventRepository;
 
     @Test
+    void failedCancellationAuditPreservesActiveStateAndRetryWritesOneCancellation() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var id = createSubscription("acme", customerId, "starter");
+        var before = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", id))
+                .andExpect(status().isOk()).andReturn();
+        var persistedBefore = objectMapper.readTree(before.getResponse().getContentAsString());
+        var failure = new IllegalStateException("audit store unavailable");
+        org.mockito.Mockito.doThrow(failure).when(eventRepository)
+                .save(org.mockito.ArgumentMatchers.any(SubscriptionEvent.class));
+
+        try {
+            var exception = org.junit.jupiter.api.Assertions.assertThrows(jakarta.servlet.ServletException.class,
+                    () -> mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", id)));
+            org.junit.jupiter.api.Assertions.assertSame(failure, exception.getCause());
+        } finally {
+            org.mockito.Mockito.reset(eventRepository);
+        }
+
+        var after = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", id))
+                .andExpect(status().isOk()).andReturn();
+        org.junit.jupiter.api.Assertions.assertEquals(persistedBefore,
+                objectMapper.readTree(after.getResponse().getContentAsString()));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("CANCELED"))
+                .andExpect(jsonPath("$.canceledAt").isNotEmpty());
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("CANCELED"))
+                .andExpect(jsonPath("$.canceledAt").isNotEmpty());
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[1].eventType").value("CANCELED"));
+    }
+
+    @Test
     void failedCreationAuditLeavesNoSubscriptionAndAllowsRetryForTheSameCustomer() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
