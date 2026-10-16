@@ -24,6 +24,12 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.dao.OptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ApiErrorResponse handleConcurrentUpdate(HttpServletRequest request) {
+        return error(HttpStatus.CONFLICT, "Resource changed concurrently; reload before retrying", request);
+    }
+
     @ExceptionHandler(DuplicateOrganizationSlugException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     ApiErrorResponse handleDuplicateOrganizationSlug(

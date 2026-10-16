@@ -27,6 +27,24 @@ class SubscriptionRepositoryTests {
     @Autowired
     private TestEntityManager entityManager;
 
+    @Test
+    void staleRenewalCannotOverwriteACancellation() {
+        var stale = repository.saveAndFlush(subscriptionEndingOn(LocalDate.of(2026, 3, 1)));
+        entityManager.clear();
+        var current = repository.findById(stale.getId()).orElseThrow();
+        current.cancel();
+        repository.flush();
+        entityManager.clear();
+
+        var canceled = repository.findById(stale.getId()).orElseThrow();
+        assertThat(canceled.getStatus()).isEqualTo(SubscriptionStatus.CANCELED);
+        assertThat(canceled.getCurrentPeriodEnd()).isEqualTo(LocalDate.of(2026, 3, 1));
+        stale.renew(LocalDate.of(2026, 4, 1));
+
+        assertThatThrownBy(() -> repository.saveAndFlush(stale))
+                .isInstanceOf(org.springframework.dao.OptimisticLockingFailureException.class);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"2026-01-31", "2026-02-01"})
     void databaseRejectsNonIncreasingPeriodsEvenWhenServiceValidationIsBypassed(String end) {

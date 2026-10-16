@@ -367,6 +367,13 @@ POST /api/organizations/acme/subscriptions/{subscriptionId}/renew
 
 The first subscription flow creates an `ACTIVE` subscription and calculates the current billing period from the selected plan interval. A customer can have only one active subscription in this MVP. Canceling a subscription changes its status to `CANCELED` and allows the customer to start a new active subscription. Lifecycle events are recorded for creation, cancellation, and renewal.
 
+Subscription updates use an internal JPA version column, added by Flyway V8.
+A stale renewal or cancellation fails with HTTP 409 and the normal correlation ID
+instead of silently overwriting another update. Reload the subscription before
+deciding whether to retry; there is no automatic mutation retry. The H2 repository
+test checks stale-entity rejection after a cancellation flush. PostgreSQL concurrency
+and races creating different subscriptions still need separate integration coverage.
+
 ## Initial Success Criteria
 
 The first public release should be considered ready when:
