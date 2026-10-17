@@ -371,7 +371,10 @@ Subscription updates use an internal JPA version column, added by Flyway V8.
 A stale renewal or cancellation fails with HTTP 409 and the normal correlation ID
 instead of silently overwriting another update. Reload the subscription before
 deciding whether to retry; there is no automatic mutation retry. The H2 repository
-test checks stale-entity rejection after a cancellation flush. PostgreSQL concurrency
+test checks stale-entity rejection after a cancellation flush. A separate H2
+transaction test commits a cancellation, then proves a stale renewal rolls back
+even an already-flushed audit INSERT while preserving the committed cancellation.
+It uses a deterministic sequence of transactions, not parallel requests. PostgreSQL concurrency
 and races creating different subscriptions still need separate integration coverage.
 
 ## Initial Success Criteria
