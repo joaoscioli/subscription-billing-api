@@ -113,3 +113,5 @@ internal implementation details to the API consumer.
 Consistent error handling shows that the API was designed for real consumers,
 not only for happy-path demos. It also connects application design,
 observability, security, and client experience.
+
+Malformed JSON, missing/null request bodies, and incompatible JSON field types return HTTP 400 using the standard API error envelope. The generic message does not echo submitted values or parser diagnostics, and the supplied X-Correlation-Id remains available. UnreadableBodyResponseTests verifies rejection before controller business work and a valid typed-body control.

@@ -24,6 +24,12 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiErrorResponse handleUnreadableBody(HttpServletRequest request) {
+        return error(HttpStatus.BAD_REQUEST, "Request body must contain valid JSON with the expected field types", request);
+    }
+
     @ExceptionHandler(org.springframework.dao.OptimisticLockingFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     ApiErrorResponse handleConcurrentUpdate(HttpServletRequest request) {
