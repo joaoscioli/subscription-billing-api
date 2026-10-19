@@ -24,6 +24,12 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiErrorResponse handleInvalidParameter(HttpServletRequest request) {
+        return error(HttpStatus.BAD_REQUEST, "Request parameter has an invalid value or type", request);
+    }
+
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiErrorResponse handleUnreadableBody(HttpServletRequest request) {
