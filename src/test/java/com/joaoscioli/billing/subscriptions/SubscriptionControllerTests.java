@@ -29,6 +29,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 class SubscriptionControllerTests {
 
+    @Test
+    void operationsOnCanceledSubscriptionDoNotMutateItsActiveReplacement() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customer = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var oldId = createSubscription("acme", customer, "starter");
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", oldId))
+                .andExpect(status().isOk());
+        var replacementId = createSubscription("acme", customer, "starter");
+        org.junit.jupiter.api.Assertions.assertNotEquals(oldId, replacementId);
+
+        var before = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", replacementId))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/cancel", oldId))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", oldId))
+                .andExpect(status().isConflict());
+
+        var after = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", replacementId))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("ACTIVE"))
+                .andReturn().getResponse().getContentAsString();
+        org.junit.jupiter.api.Assertions.assertEquals(objectMapper.readTree(before), objectMapper.readTree(after));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", replacementId))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", oldId))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[1].eventType").value("CANCELED"));
+        org.junit.jupiter.api.Assertions.assertEquals(3, eventRepository.count());
+    }
+
     @Autowired
     private MockMvc mockMvc;
 
