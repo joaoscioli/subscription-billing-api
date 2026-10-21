@@ -24,6 +24,16 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnsupportedMethod(
+            org.springframework.web.HttpRequestMethodNotSupportedException exception,
+            HttpServletRequest request
+    ) {
+        return org.springframework.http.ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .headers(exception.getHeaders())
+                .body(error(HttpStatus.METHOD_NOT_ALLOWED, "HTTP method is not supported for this endpoint", request));
+    }
+
     @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiErrorResponse handleInvalidParameter(HttpServletRequest request) {
