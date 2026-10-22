@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -18,14 +19,54 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class SubscriptionConflictTransactionTests {
     @Autowired SubscriptionRepository subscriptions;
-    @Autowired SubscriptionEventRepository events;
+    @MockitoSpyBean SubscriptionEventRepository events;
+    @Autowired SubscriptionService service;
     @PersistenceContext EntityManager entityManager;
     @Autowired PlatformTransactionManager transactionManager;
+
+    @Test
+    void auditStorageFailureRollsBackCancellationAndItsAlreadyFlushedEvent() {
+        var transaction = new TransactionTemplate(transactionManager);
+        var slug = "audit-failure-" + UUID.randomUUID();
+        var id = transaction.execute(status -> {
+            var organization = new Organization("Audit rollback", slug);
+            entityManager.persist(organization);
+            var customer = new Customer(organization, "Ada", "ada@example.com");
+            entityManager.persist(customer);
+            var plan = new Plan(organization, "Pro", "pro", 2500, "BRL", BillingInterval.MONTHLY);
+            entityManager.persist(plan);
+            var start = LocalDate.of(2026, 2, 1);
+            var subscription = subscriptions.save(new Subscription(organization, customer, plan, start, start,
+                    LocalDate.of(2026, 3, 1)));
+            events.save(new SubscriptionEvent(subscription, SubscriptionEventType.CREATED, "Original creation"));
+            return subscription.getId();
+        });
+        var failure = new IllegalStateException("audit storage failed after flush");
+        doAnswer(invocation -> {
+            events.saveAndFlush(invocation.getArgument(0));
+            throw failure;
+        }).when(events).save(any(SubscriptionEvent.class));
+
+        assertThatThrownBy(() -> service.cancel(slug, id)).isSameAs(failure);
+
+        // Fresh transaction sees committed data, rather than the failed persistence context.
+        transaction.executeWithoutResult(status -> {
+            var current = subscriptions.findById(id).orElseThrow();
+            assertThat(current.getStatus()).isEqualTo(SubscriptionStatus.ACTIVE);
+            assertThat(current.getCanceledAt()).isNull();
+            assertThat(current.getCurrentPeriodStart()).isEqualTo(LocalDate.of(2026, 2, 1));
+            assertThat(current.getCurrentPeriodEnd()).isEqualTo(LocalDate.of(2026, 3, 1));
+            assertThat(events.findAllBySubscription_IdOrderByOccurredAtAsc(id))
+                    .extracting(SubscriptionEvent::getEventType).containsExactly(SubscriptionEventType.CREATED);
+        });
+    }
 
     @Test
     void failedStaleRenewalRollsBackItsAuditEventAndPreservesCommittedCancellation() {
