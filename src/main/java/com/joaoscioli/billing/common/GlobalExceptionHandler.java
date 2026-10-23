@@ -24,6 +24,16 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnsupportedMediaType(
+            org.springframework.web.HttpMediaTypeNotSupportedException exception,
+            HttpServletRequest request
+    ) {
+        return org.springframework.http.ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .headers(exception.getHeaders())
+                .body(error(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Request content type is not supported", request));
+    }
+
     @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
     org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnsupportedMethod(
             org.springframework.web.HttpRequestMethodNotSupportedException exception,
