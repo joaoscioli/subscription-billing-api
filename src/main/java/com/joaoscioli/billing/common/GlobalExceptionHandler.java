@@ -24,6 +24,12 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiErrorResponse handleMissingParameter(HttpServletRequest request) {
+        return error(HttpStatus.BAD_REQUEST, "Required request parameter is missing", request);
+    }
+
     @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
     org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnsupportedMediaType(
             org.springframework.web.HttpMediaTypeNotSupportedException exception,
