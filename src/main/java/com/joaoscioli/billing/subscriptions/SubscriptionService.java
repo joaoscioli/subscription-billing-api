@@ -103,7 +103,7 @@ public class SubscriptionService {
     @Transactional
     public SubscriptionResponse renew(String organizationSlug, UUID id, String idempotencyKey) {
         if (idempotencyKey != null && (idempotencyKey.isBlank() || idempotencyKey.length() > 128)) {
-            throw new IllegalArgumentException("Idempotency-Key must have between 1 and 128 characters");
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Invalid Idempotency-Key");
         }
         var subscription = getById(organizationSlug, id);
         if (idempotencyKey != null && eventRepository.existsBySubscription_IdAndEventTypeAndIdempotencyKey(
