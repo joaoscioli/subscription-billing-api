@@ -16,6 +16,14 @@ In non-test profiles the API now uses HTTP Basic with existing database-backed u
 
 There is **no self-service registration, login/JWT endpoint, or production user provisioning flow yet**; users must be provisioned securely outside this API. This security baseline does not make the project production-ready. Further work: dedicated security integration tests, fine-grained roles, secure onboarding, command idempotency, and explicit tests of tenant authorization.
 
+## Portfolio release scope (v0.1)
+
+This is a **portfolio-grade backend**, not a deployed payment processor. The bounded release includes organization, customer, plan and subscription lifecycle APIs, Flyway/PostgreSQL constraints, audit events, optimistic concurrency, tenant-scoped HTTP Basic access control and CI testing.
+
+Renewal supports optional `Idempotency-Key` (1–128 characters). When supplied, retrying the same key for a subscription does not advance the subscription period twice. The key is persisted on the renewal audit event; a repeated response reflects current state rather than an original response snapshot. Concurrent same-key requests may return a constraint or optimistic-lock conflict; clients can retry with the same key after the competing transaction completes. Calls without a key retain legacy non-idempotent behavior.
+
+The project intentionally excludes JWT login/registration, public user onboarding, payment-gateway transactions, invoicing and production deployment. Never deploy using the permissive `test` profile.
+
 ## Objective
 
 Build a REST API for managing organizations, users, subscription plans, customer subscriptions, and simulated billing events.
