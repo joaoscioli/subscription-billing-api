@@ -32,8 +32,20 @@ class PostgreSqlMigrationIT {
                 String.class
         );
 
-        assertThat(successfulMigrations).isGreaterThanOrEqualTo(6);
+        assertThat(successfulMigrations).isGreaterThanOrEqualTo(9);
         assertThat(organizationsTable).isEqualTo("organizations");
         assertThat(subscriptionsTable).isEqualTo("subscriptions");
+
+        var activeIndexCount = jdbcTemplate.queryForObject(
+                """
+                SELECT count(*) FROM pg_index i
+                JOIN pg_class idx ON idx.oid = i.indexrelid
+                WHERE idx.relname = 'uk_subscriptions_one_active_per_customer'
+                  AND i.indisunique = true
+                  AND i.indpred IS NOT NULL
+                """,
+                Integer.class
+        );
+        assertThat(activeIndexCount).isEqualTo(1);
     }
 }
