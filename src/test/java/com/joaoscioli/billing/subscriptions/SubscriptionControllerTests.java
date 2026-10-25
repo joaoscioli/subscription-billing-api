@@ -658,4 +658,25 @@ class SubscriptionControllerTests {
 
         org.junit.jupiter.api.Assertions.assertEquals(1, eventCount);
     }
+
+    @Test
+    void repeatedRenewalWithSameIdempotencyKeyAdvancesOnlyOnce() throws Exception {
+        createOrganization("Idempotent Org", "idempotent-org");
+        var customerId = createCustomer("idempotent-org", "Ada", "ada@idempotent-org.com");
+        createPlan("idempotent-org", "Starter", "starter", 2900, "MONTHLY");
+        var id = createSubscription("idempotent-org", customerId, "starter");
+        var url = "/api/organizations/idempotent-org/subscriptions/{id}/renew";
+
+        var first = mockMvc.perform(post(url, id).header("Idempotency-Key", "renewal-once"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        var second = mockMvc.perform(post(url, id).header("Idempotency-Key", "renewal-once"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        org.junit.jupiter.api.Assertions.assertEquals(
+                objectMapper.readTree(first).get("currentPeriodEnd"),
+                objectMapper.readTree(second).get("currentPeriodEnd"));
+        mockMvc.perform(get("/api/organizations/idempotent-org/subscriptions/{id}/events", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
 }
