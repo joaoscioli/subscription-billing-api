@@ -4,6 +4,12 @@ A backend-first SaaS billing system built to demonstrate production-minded Java 
 
 The project is intentionally scoped as a portfolio project: small enough to finish, realistic enough to show backend architecture, authentication, persistence, tests, CI, documentation, and operational concerns.
 
+## Implementation status (October 2026)
+
+This is a **portfolio learning project and work in progress**, not a production-ready billing platform. Implemented: organization, customer, plan and subscription CRUD/lifecycle endpoints; cancellation and renewal; persisted subscription audit events; Flyway migrations; optimistic locking; automated API tests and a CI workflow. Still incomplete: enforcing authentication and tenant-aware authorization, command idempotency, database-level protection against concurrent active subscriptions, actual payment execution and production deployment. Do not expose this API publicly with the current permissive `SecurityConfig`.
+
+The CI test cleanup was updated to remove subscription events before deleting referenced subscriptions. Verify a green workflow before treating the repository as a completed portfolio release.
+
 ## Objective
 
 Build a REST API for managing organizations, users, subscription plans, customer subscriptions, and simulated billing events.
@@ -25,15 +31,15 @@ This repository is designed for engineering recruiters, hiring managers, and sen
 
 The goal is not to show a large system. The goal is to show clear engineering judgment in a compact system.
 
-## Core Features v0.1
+## Planned scope for v0.1
 
 - Organization management
-- User registration and authentication
-- JWT-based API security
-- Role-based access control
+- User registration and authentication (not yet implemented)
+- JWT-based API security (not yet implemented)
+- Role-based access control (not yet implemented)
 - Subscription plan management
 - Customer subscription lifecycle
-- Simulated payment events
+- Subscription lifecycle audit events (implemented; payment processing not implemented)
 - Audit log for important business actions
 - OpenAPI documentation
 - Automated tests
