@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Sql(
         statements = {
                 "DELETE FROM application_users",
-                "DELETE FROM subscriptions",
+                "DELETE FROM subscription_events", "DELETE FROM subscriptions",
                 "DELETE FROM plans",
                 "DELETE FROM customers",
                 "DELETE FROM organizations"
