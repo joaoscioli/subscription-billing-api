@@ -97,13 +97,26 @@ public class SubscriptionService {
 
     @Transactional
     public SubscriptionResponse renew(String organizationSlug, UUID id) {
+        return renew(organizationSlug, id, null);
+    }
+
+    @Transactional
+    public SubscriptionResponse renew(String organizationSlug, UUID id, String idempotencyKey) {
+        if (idempotencyKey != null && (idempotencyKey.isBlank() || idempotencyKey.length() > 128)) {
+            throw new IllegalArgumentException("Idempotency-Key must have between 1 and 128 characters");
+        }
         var subscription = getById(organizationSlug, id);
+        if (idempotencyKey != null && eventRepository.existsBySubscription_IdAndEventTypeAndIdempotencyKey(
+                id, SubscriptionEventType.RENEWED, idempotencyKey)) {
+            return SubscriptionResponse.from(subscription);
+        }
         var nextPeriodEnd = calculateCurrentPeriodEnd(
                 subscription.getCurrentPeriodEnd(),
                 subscription.getPlan().getBillingInterval()
         );
         subscription.renew(nextPeriodEnd);
-        recordEvent(subscription, SubscriptionEventType.RENEWED, "Subscription renewed until " + nextPeriodEnd);
+        eventRepository.save(new SubscriptionEvent(subscription, SubscriptionEventType.RENEWED,
+                "Subscription renewed until " + nextPeriodEnd, idempotencyKey));
 
         return SubscriptionResponse.from(subscription);
     }
