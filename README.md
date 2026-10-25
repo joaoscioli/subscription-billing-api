@@ -10,6 +10,12 @@ This is a **portfolio learning project and work in progress**, not a production-
 
 The CI test cleanup was updated to remove subscription events before deleting referenced subscriptions. Verify a green workflow before treating the repository as a completed portfolio release.
 
+## Security boundary for the portfolio API
+
+In non-test profiles the API now uses HTTP Basic with existing database-backed users, BCrypt password hashes and an authorization decision tied to the authenticated user's organization. Only /actuator/health and /actuator/info are public; all other unspecified routes are denied. A user can call /api/organizations/{organizationSlug}/... only when their organization matches the path slug. The organization collection/root endpoints are intentionally denied until a safe administrative onboarding flow exists. Use HTTPS if deploying this HTTP Basic demonstration; never send credentials over plaintext connections. The `test` profile is intentionally permissive for existing domain/MockMvc tests and must **never** be deployed.
+
+There is **no self-service registration, login/JWT endpoint, or production user provisioning flow yet**; users must be provisioned securely outside this API. This security baseline does not make the project production-ready. Further work: dedicated security integration tests, fine-grained roles, secure onboarding, command idempotency, and explicit tests of tenant authorization.
+
 ## Objective
 
 Build a REST API for managing organizations, users, subscription plans, customer subscriptions, and simulated billing events.
