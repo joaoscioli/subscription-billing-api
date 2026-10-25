@@ -38,6 +38,9 @@ public class SubscriptionEvent {
     @Column(nullable = false, length = 500)
     private String description;
 
+    @Column(name = "idempotency_key", length = 128)
+    private String idempotencyKey;
+
     @Column(nullable = false)
     private OffsetDateTime occurredAt;
 
@@ -50,6 +53,11 @@ public class SubscriptionEvent {
         this.subscription = subscription;
         this.eventType = eventType;
         this.description = description;
+    }
+
+    public SubscriptionEvent(Subscription subscription, SubscriptionEventType eventType, String description, String idempotencyKey) {
+        this(subscription, eventType, description);
+        this.idempotencyKey = idempotencyKey;
     }
 
     @PrePersist
