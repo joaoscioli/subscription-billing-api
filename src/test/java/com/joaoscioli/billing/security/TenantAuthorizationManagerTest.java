@@ -40,6 +40,34 @@ class TenantAuthorizationManagerTest {
         assertThat(manager.check(() -> null, context("acme")).isGranted()).isFalse();
     }
 
+    @Test
+    void disabledUserCannotAccessEvenTheirOwnOrganization() {
+        var user = mock(ApplicationUser.class);
+        when(repository.findByEmail("disabled@example.com")).thenReturn(Optional.of(user));
+        when(user.isEnabled()).thenReturn(false);
+        var authentication = new UsernamePasswordAuthenticationToken(
+                "disabled@example.com", "secret", java.util.List.of(() -> "ROLE_OWNER"));
+
+        assertThat(manager.check(() -> authentication, context("acme")).isGranted()).isFalse();
+
+        verify(repository).findByEmail("disabled@example.com");
+        verify(user).isEnabled();
+        verifyNoMoreInteractions(repository, user);
+    }
+
+    @Test
+    void unauthenticatedTokenAndMissingTenantFailBeforeLookingUpAUser() {
+        var unauthenticated = new UsernamePasswordAuthenticationToken("owner@example.com", "secret");
+        var authenticated = new UsernamePasswordAuthenticationToken(
+                "owner@example.com", "secret", java.util.List.of(() -> "ROLE_OWNER"));
+        var missingTenant = new RequestAuthorizationContext(new MockHttpServletRequest(), Map.of());
+
+        assertThat(manager.check(() -> unauthenticated, context("acme")).isGranted()).isFalse();
+        assertThat(manager.check(() -> authenticated, missingTenant).isGranted()).isFalse();
+
+        verifyNoInteractions(repository);
+    }
+
     private RequestAuthorizationContext context(String slug) {
         return new RequestAuthorizationContext(new MockHttpServletRequest(), Map.of("organizationSlug", slug));
     }
