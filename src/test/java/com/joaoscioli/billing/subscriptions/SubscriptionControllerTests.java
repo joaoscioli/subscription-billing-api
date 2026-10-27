@@ -660,6 +660,29 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void renewalIdempotencyKeyIsScopedToEachSubscription() throws Exception {
+        createOrganization("Acme", "acme");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var first = createSubscription("acme", createCustomer("acme", "Ada", "ada@acme.com"), "starter");
+        var second = createSubscription("acme", createCustomer("acme", "Grace", "grace@acme.com"), "starter");
+
+        // A caller may reuse its batch key across resources; neither renewal suppresses the other.
+        for (var id : java.util.List.of(first, second, first, second)) {
+            mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", id)
+                            .header("Idempotency-Key", "batch-renewal"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.currentPeriodStart").value("2026-07-01"))
+                    .andExpect(jsonPath("$.currentPeriodEnd").value("2026-08-01"));
+        }
+        for (var id : java.util.List.of(first, second)) {
+            mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
+                    .andExpect(jsonPath("$[1].eventType").value("RENEWED"));
+        }
+        org.junit.jupiter.api.Assertions.assertEquals(4, eventRepository.count());
+    }
+
+    @Test
     void repeatedRenewalWithSameIdempotencyKeyAdvancesOnlyOnce() throws Exception {
         createOrganization("Idempotent Org", "idempotent-org");
         var customerId = createCustomer("idempotent-org", "Ada", "ada@idempotent-org.com");
