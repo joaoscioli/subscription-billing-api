@@ -660,6 +660,36 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void invalidRenewalKeysLeaveThePersistedSubscriptionAndAuditTrailUntouched() throws Exception {
+        createOrganization("Acme", "acme");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var id = createSubscription("acme", createCustomer("acme", "Ada", "ada@acme.com"), "starter");
+        var resource = "/api/organizations/acme/subscriptions/{id}";
+        var before = mockMvc.perform(get(resource, id)).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        for (var key : java.util.List.of("", "   ", "x".repeat(129))) {
+            mockMvc.perform(post(resource + "/renew", id).header("Idempotency-Key", key))
+                    .andExpect(status().isBadRequest());
+            var after = mockMvc.perform(get(resource, id)).andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+            org.junit.jupiter.api.Assertions.assertEquals(objectMapper.readTree(before), objectMapper.readTree(after));
+            mockMvc.perform(get(resource + "/events", id)).andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(1)))
+                    .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+        }
+        // The maximum accepted key still renews exactly once after earlier rejections.
+        for (int attempt = 0; attempt < 2; attempt++) {
+            mockMvc.perform(post(resource + "/renew", id).header("Idempotency-Key", "x".repeat(128)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.currentPeriodStart").value("2026-07-01"))
+                    .andExpect(jsonPath("$.currentPeriodEnd").value("2026-08-01"));
+        }
+        org.junit.jupiter.api.Assertions.assertEquals(2, eventRepository.count());
+        assertEventWasRecorded(id, SubscriptionEventType.RENEWED);
+    }
+
+    @Test
     void renewalIdempotencyKeyIsScopedToEachSubscription() throws Exception {
         createOrganization("Acme", "acme");
         createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
