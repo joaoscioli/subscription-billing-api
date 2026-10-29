@@ -181,6 +181,53 @@ class SubscriptionControllerTests {
     }
 
     @Test
+    void failedKeyedRenewalDoesNotConsumeTheKeyAndSuccessfulRetryIsIdempotent() throws Exception {
+        createOrganization("Acme Inc", "acme");
+        var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
+        createPlan("acme", "Starter", "starter", 2900, "MONTHLY");
+        var id = createSubscription("acme", customerId, "starter");
+        var before = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", id))
+                .andExpect(status().isOk()).andReturn();
+        var persistedBefore = objectMapper.readTree(before.getResponse().getContentAsString());
+        var failure = new IllegalStateException("audit store unavailable");
+        org.mockito.Mockito.doThrow(failure).when(eventRepository)
+                .save(org.mockito.ArgumentMatchers.any(SubscriptionEvent.class));
+
+        try {
+            var exception = org.junit.jupiter.api.Assertions.assertThrows(jakarta.servlet.ServletException.class,
+                    () -> mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", id)
+                            .header("Idempotency-Key", "retry-after-audit-failure")));
+            org.junit.jupiter.api.Assertions.assertSame(failure, exception.getCause());
+        } finally {
+            // Reset the spy so Spring Data's proxied implementation handles the retry.
+            org.mockito.Mockito.reset(eventRepository);
+        }
+
+        var after = mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}", id))
+                .andExpect(status().isOk()).andReturn();
+        org.junit.jupiter.api.Assertions.assertEquals(persistedBefore,
+                objectMapper.readTree(after.getResponse().getContentAsString()));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventType").value("CREATED"));
+
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", id)
+                        .header("Idempotency-Key", "retry-after-audit-failure"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPeriodStart").value("2026-07-01"))
+                .andExpect(jsonPath("$.currentPeriodEnd").value("2026-08-01"));
+        // The same key remains reusable after rollback, then suppresses later repeats.
+        mockMvc.perform(post("/api/organizations/acme/subscriptions/{id}/renew", id)
+                        .header("Idempotency-Key", "retry-after-audit-failure"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPeriodStart").value("2026-07-01"))
+                .andExpect(jsonPath("$.currentPeriodEnd").value("2026-08-01"));
+        mockMvc.perform(get("/api/organizations/acme/subscriptions/{id}/events", id))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[1].eventType").value("RENEWED"));
+    }
+
+    @Test
     void createSubscriptionReturnsCreatedSubscription() throws Exception {
         createOrganization("Acme Inc", "acme");
         var customerId = createCustomer("acme", "Ada Lovelace", "ada@acme.com");
