@@ -24,6 +24,13 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotAcceptableException.class)
+    org.springframework.http.ResponseEntity<ApiErrorResponse> handleNotAcceptable(HttpServletRequest request) {
+        return org.springframework.http.ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .body(error(HttpStatus.NOT_ACCEPTABLE, "Requested response media type is not supported", request));
+    }
+
     @ExceptionHandler(org.springframework.web.bind.MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiErrorResponse handleMissingHeader(HttpServletRequest request) {
