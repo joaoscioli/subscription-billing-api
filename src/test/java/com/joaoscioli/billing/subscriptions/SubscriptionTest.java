@@ -13,6 +13,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SubscriptionTest {
 
     @Test
+    void repeatedCancellationAfterRenewalPreservesTheFinalPeriodAndTimestamp() {
+        var subscription = subscriptionEndingOn(LocalDate.of(2026, 2, 1));
+        subscription.renew(LocalDate.of(2026, 3, 1));
+        subscription.cancel();
+        var canceledAt = subscription.getCanceledAt();
+
+        subscription.cancel();
+
+        org.junit.jupiter.api.Assertions.assertNotNull(canceledAt);
+        assertEquals(canceledAt, subscription.getCanceledAt());
+        assertEquals(SubscriptionStatus.CANCELED, subscription.getStatus());
+        assertEquals(LocalDate.of(2026, 2, 1), subscription.getCurrentPeriodStart());
+        assertEquals(LocalDate.of(2026, 3, 1), subscription.getCurrentPeriodEnd());
+    }
+
+    @Test
     void renewAdvancesTheBillingPeriod() {
         var subscription = subscriptionEndingOn(LocalDate.of(2026, 2, 1));
 
