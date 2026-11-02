@@ -172,6 +172,7 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .map(fieldError -> new ApiFieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .sorted(java.util.Comparator.comparing(ApiFieldError::field).thenComparing(ApiFieldError::message))
                 .toList();
 
         return error(HttpStatus.BAD_REQUEST, "Request validation failed", request, details);
