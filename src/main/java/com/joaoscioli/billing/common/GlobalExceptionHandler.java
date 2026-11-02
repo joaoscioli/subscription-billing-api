@@ -24,6 +24,12 @@ import java.util.UUID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ApiErrorResponse handleMissingResource(HttpServletRequest request) {
+        return error(HttpStatus.NOT_FOUND, "Requested resource was not found", request);
+    }
+
     @ExceptionHandler(org.springframework.web.HttpMediaTypeNotAcceptableException.class)
     org.springframework.http.ResponseEntity<ApiErrorResponse> handleNotAcceptable(HttpServletRequest request) {
         return org.springframework.http.ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
